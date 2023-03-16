@@ -8,6 +8,7 @@ exo_mat2.py
 La classe MatrixNumPy : algèbre des matrices de format quelconque, avec numpy
 """
 
+# D. Mattei
 
 from multimethod import multimethod
 

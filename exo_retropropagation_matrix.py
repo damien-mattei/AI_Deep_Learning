@@ -118,14 +118,12 @@ class ReseauRetroPropagation():
                 print('self.ns=',self.ns)
             for j in range(self.nc+1):
                 for k in range(self.ns):
-                    #self.mat_jk.L[k][j] -= -self.eta*self.act_j[j]*self.act_k[k]*(1-self.act_k[k])*self.grad_k[k]
                     self.mat_jk[k][j] -= -self.eta*self.act_j[j]*self.act_k[k]*(1-self.act_k[k])*self.grad_k[k]
                     
             # Réponse à la question "b4" : T_{jk} = z_k * (1-z_k) * w_{jk}
 
             # TEMPS 2. calcul des gradients locaux sur la couche j cachée (rétro-propagation), sauf pour le bias constant
             for j in range(1,self.nc+1):
-                #self.grad_j[j] = sum(self.act_k[k]*(1-self.act_k[k])*self.mat_jk.L[k][j]*self.grad_k[k] for k in range(self.ns))
                 self.grad_j[j] = sum(self.act_k[k]*(1-self.act_k[k])*self.mat_jk[k][j]*self.grad_k[k] for k in range(self.ns))
                 
             if trace_full: print('gradients sur la couche j :',self.grad_j)
@@ -133,7 +131,6 @@ class ReseauRetroPropagation():
             # modification des poids i->j
             for i in range(self.ne+1):
                 for j in range(1,self.nc):
-                    #self.mat_ij.L[j-1][i] -= -self.eta*self.act_i[i]*self.act_j[j]*(1-self.act_j[j])*self.grad_j[j]
                     self.mat_ij[j-1][i] -= -self.eta*self.act_i[i]*self.act_j[j]*(1-self.act_j[j])*self.grad_j[j]
                     
             # et l'on passe à l'exemple suivant
