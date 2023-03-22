@@ -41,7 +41,7 @@ class MatrixNumPy:
         if __debug__:
             print("# MatrixNumPy constructor MatrixNumPy (Numeric,Numeric) #")
 
-        __init__(lambda i,j: 0,n,p) # return a Zero matrix
+        self.__init__(lambda i,j: 0,n,p) # return a Zero matrix
 
 
    
