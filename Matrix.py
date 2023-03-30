@@ -119,6 +119,9 @@ class Matrix:
     def __getitem__(self,i):        # pour pouvoir écrire m[i] pour la ligne i
         return self.L[i]            # et m[i][j] pour l'élément en ligne i et colonne j
 
+    def __setitem__(self, i, data):
+          self.A[i] = data
+
     def lig(self,i):                # m.lig(i) <==> m[i]
         '''Retourne la ligne i >= 0 de la matrice sous forme de liste plate.'''
         return self.L[i]
