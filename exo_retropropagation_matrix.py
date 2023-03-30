@@ -2,6 +2,8 @@
 # L'algorithme de rétro-propagation du gradient dans un
 # réseau de neurones avec 1 couche cachée.
 
+#  launch with: python3.11 -O exo_retropropagation_matrix.py 
+
 from random import seed, uniform
 seed(1789)     # si vous voulez avoir les mêmes tirages aléatoires à chaque exécution du fichier !
 from math import exp, pow
@@ -130,7 +132,7 @@ class ReseauRetroPropagation():
             
             # modification des poids i->j
             for i in range(self.ne+1):
-                for j in range(1,self.nc):
+                for j in range(1,self.nc+1):
                     self.mat_ij[j-1][i] -= -self.eta*self.act_i[i]*self.act_j[j]*(1-self.act_j[j])*self.grad_j[j]
                     
             # et l'on passe à l'exemple suivant
