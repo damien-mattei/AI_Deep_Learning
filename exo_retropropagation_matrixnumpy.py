@@ -81,7 +81,6 @@ class ReseauRetroPropagation():
         self.stim_j = stim_j
         self.act_j = act_j
         self.stim_k = stim_k
-        self.mat_jk = mat_jk
         self.act_k = act_k
 
 

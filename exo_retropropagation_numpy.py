@@ -160,7 +160,6 @@ class ReseauRetroPropagation():
         self.stim_j = stim_j
         self.act_j = act_j
         self.stim_k = stim_k
-        self.mat_jk = mat_jk
         self.act_k = act_k
 
 
@@ -223,7 +222,10 @@ class ReseauRetroPropagation():
             if trace and (it in (0,self.nbiter-1)) and (ip == len(Lexemples)-1):
                 self.dump(it,'sortie')
             ip = (ip + 1) % len(Lexemples)      # parcours des exemples en ordre circulaire
-            
+
+
+
+                
     def dump(self,n,msg):     # dump du réseau en entrant dans l'itération numéro n
         print('---------- DUMP',msg,'itération numéro',n)
         print('mat_ij :') ; print(self.mat_ij)

@@ -49,6 +49,7 @@ class ReseauRetroPropagation():
         
         if len(Lentrees) != len(self.z_i):
             raise ValueError("Mauvais nombre d'entrées !")
+        
         self.z_i = Lentrees       # on ne touche pas au biais
         
         # propagation des entrées vers la sortie
@@ -96,10 +97,8 @@ class ReseauRetroPropagation():
         for it in range(nbiter):   # le nombre d'itérations est fixé !
             
             error = 0.0                     # l'erreur totale pour cet exemple
-            if trace and (it in (0,nbiter-1)) and (ip == len(Lexemples)-1):
-                self.dump(it,'entrée')
+            
             (entrees,sorties_attendues) = Lexemples[ip]         # un nouvel exemple à apprendre
-            if trace_full : print('\nExemple à apprendre :',entrees,'-->',sorties_attendues)
             
             # PROPAGATION VERS L'AVANT
             self.accepte_et_propage(entrees)       # sorties obtenues sur l'exemple courant, self.z_k et z_j sont mis à jour
@@ -131,7 +130,6 @@ class ReseauRetroPropagation():
             nc = len(z_j)
             eta = self.eta
             
-           
             # (test fait: modifier la matrice apres le calcul du gradient de la couche j , conclusion: ne change pas la convergence de l'algo)
 
             self.modification_des_poids(mat_jk,eta,z_j,z_k,grad_k)
@@ -166,18 +164,10 @@ class ReseauRetroPropagation():
             #     # and update the bias
             #     mat_ij[j][0] -= -eta * 1.0 * z_j[j] * (1 - z_j[j]) * grad_j[j]
                 
-          
-           
+                  
             # et l'on passe à l'exemple suivant
-            if trace and (it in (0,nbiter-1)) and (ip == len(Lexemples)-1):
-                self.dump(it,'sortie')
-                
+            
             ip = (ip + 1) % len(Lexemples)      # parcours des exemples en ordre circulaire
-
-            self.grad_k = grad_k
-            self.mat_jk = mat_jk
-            self.grad_j = grad_j
-            self.mat_ij = mat_ij
 
 
             
@@ -220,9 +210,7 @@ class ReseauRetroPropagation():
             
 if __name__ == '__main__':
     
-    trace = False
-    trace_full = False
-
+   
     print('################## NOT ##################')
     r1 = ReseauRetroPropagation(1,2,1,nbiter=10000,eta=0.5)
     Lexemples1 = [[[1],[0]],[[0],[1]]]

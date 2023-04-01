@@ -27,8 +27,7 @@ class ReseauRetroPropagation():
         # >>> [ [0] * n for n in nc ]
         # [[0, 0], [0, 0, 0], [0]]      
         self.z = [ [0] * n for n in nc ] # les entrées concrètes seront fournies avec la méthode accepte
-        
-        
+               
         # nc[n] + 1 in the matrix size because we add one column of bias in the matrix for each hidden neuron of the hidden layer "c"
 
         # >>> mat = [ MatrixNumPy( lambda j,i: uniform(-1,1) , nc[n+1] , nc[n] + 1 ) for n in range(len(nc)-1) ]
@@ -42,18 +41,19 @@ class ReseauRetroPropagation():
         # MatrixNumPy @ 0x7f14c2d9bad0 
         # ]
 
+        # >>> print(mat[0])
+        # [[ 0.0865122   0.48109634 -0.88726825]
+        #  [-0.62196803 -0.02562076 -0.12770346]
+        #  [-0.19076204 -0.38836422 -0.91260862]]
+        
         # use with mat[0][1][2] or mat[0][1,2] notation
         #mat[i][j][k] == poids k->j from layer i to layer i+1
-        self.mat =[ MatrixNumPy( lambda j,i: uniform(-1,1) , nc[n+1] , nc[n] + 1 ) for n in range(len(nc) - 1) ] 
-        
-        self.z_j = nc * [0]     # valeurs z_j des neurones cachés
-        self.grad_j = nc * [0]    # gradients locaux des neurones cachés
+        self.mat = [ MatrixNumPy( lambda j,i: uniform(-1,1) , nc[n+1] , nc[n] + 1 )   for n in range(lnc - 1) ] 
 
-        # nc+1 in the matrix size because with add one column of bias in the matrix for each neuron of the output layer "k"
-        self.mat_jk = MatrixNumPy(lambda k,j: uniform(-1,1),ns,nc+1)  # self.mat_jk[k][j] == poids j->k
-
-        self.z_k = ns * [0]     # valeurs z_k des neurones de sortie
-        self.grad_k = ns * [0]    # gradients locaux des neurones de sortie
+        # >>> grad = [ [0] * n for n in nc ]
+        # >>> grad
+        # [[0, 0], [0, 0, 0], [0]]
+        self.grad = [ [0] * n for n in nc ]    # gradients locaux des neurones cachés et gradient sur la couche de sortie
         
         self.nbiter = nbiter
         self.eta = eta                  # "learning rate" 
@@ -62,45 +62,40 @@ class ReseauRetroPropagation():
 
         
     # fusionne accept et propage
-    # z_* sans le coef. 1 constant
+    # z_* sans le coef. 1 constant pour le bias
     def accepte_et_propage(self,Lentrees):         # on entre des entrées et on les propage
-        
-        if len(Lentrees) != len(self.z_i):
-            raise ValueError("Mauvais nombre d'entrées !")
-        self.z_i = Lentrees       # on ne touche pas au biais
-        
-        # propagation des entrées vers la sortie
-        
-        # calcul des stimuli reçus par la couche cachée à-partir des entrées
 
         # note: i just reference the variables for code readness (hide all the self keyword)
-        mat_ij = self.mat_ij
-        z_i = self.z_i
-
-        # create a list with 1 in front
-        z_i_1 = [1] + z_i
+        z = self.z
+        mat = self.mat
         
-        z̃_j = mat_ij * z_i_1 # z̃_i = matrix * iterable (list here)
+        if len(Lentrees) != len(z[0]):
+            raise ValueError("Mauvais nombre d'entrées !")
+        
+        z[0] = Lentrees       # on ne touche pas au biais
+        self.z[0] = z[0]
+        
+        # propagation des entrées vers la sortie
 
-        # calcul des réponses des neurones cachés
-        z_j = list(map(sig,z̃_j)) 
+        n = len(z)
+        
+        for i in range(n-1) :
             
-        # calcul des stimuli reçus par la couche de sortie
-        mat_jk = self.mat_jk
+            # calcul des stimuli reçus par la couche cachée d'indice i+1 à-partir de la précedente
 
-        # create a list with 1 in front
-        z_j_1 = [1] + z_j
-        
-        z̃_k = mat_jk * z_j_1 # matrix * iterable (list here)
+            # create a list with 1 in front for the bias coefficient
+            z_1 = [1] + z[i]
+            
+            z̃ = mat[i] * z_1 # z̃ = matrix * iterable (list here)
+            
+            # calcul des réponses des neurones cachés ou de la couche de sortie
+            z[i+1] = list(map(sig,z̃)) 
 
-        # calcul des réponses des neurones cachés
-        z_k = list(map(sig,z̃_k))
+            # update the variable when necessary
+            self.z[i+1] = z[i+1]
+
         
-        # update the variable when necessary
-        self.z_j = z_j
-        self.z_k = z_k
-        
-        #return self.z_k               # et retour des sorties
+        #return self.z[i+1]              # et retour des sorties
 
 
     
@@ -114,26 +109,27 @@ class ReseauRetroPropagation():
         for it in range(nbiter):   # le nombre d'itérations est fixé !
             
             error = 0.0                     # l'erreur totale pour cet exemple
-            if trace and (it in (0,nbiter-1)) and (ip == len(Lexemples)-1):
-                self.dump(it,'entrée')
-            (entrees,sorties_attendues) = Lexemples[ip]         # un nouvel exemple à apprendre
-            if trace_full : print('\nExemple à apprendre :',entrees,'-->',sorties_attendues)
             
+            (entrees,sorties_attendues) = Lexemples[ip]         # un nouvel exemple à apprendre
+                      
             # PROPAGATION VERS L'AVANT
             self.accepte_et_propage(entrees)       # sorties obtenues sur l'exemple courant, self.z_k et z_j sont mis à jour
               
             # RETRO_PROPAGATION VERS L'ARRIERE, EN DEUX TEMPS
 
             # note: i just reference the variables for code readness (hide all the self keyword)
-            z_k = self.z_k # read-only variable
-            grad_k = self.grad_k
+            z = self.z
 
-            ns = len(z_k)
+            i = len(z) - 1
+
+            grad = self.grad
+            
+            ns = len(z[i])
             
             # TEMPS 1. calcul des gradients locaux sur la couche k de sortie (les erreurs commises)
             for k in range(ns):
-                grad_k[k] = sorties_attendues[k] - z_k[k]       # gradient sur un neurone de sortie (erreur locale)
-                error += pow(grad_k[k],2)                              # l'erreur quadratique totale
+                grad[i][k] = sorties_attendues[k] - z[i][k]       # gradient sur un neurone de sortie (erreur locale)
+                error += pow(grad[i][k],2)                              # l'erreur quadratique totale
                 
             error *= 0.5
             #print(it)
@@ -187,16 +183,10 @@ class ReseauRetroPropagation():
           
            
             # et l'on passe à l'exemple suivant
-            if trace and (it in (0,nbiter-1)) and (ip == len(Lexemples)-1):
-                self.dump(it,'sortie')
-                
+            
             ip = (ip + 1) % len(Lexemples)      # parcours des exemples en ordre circulaire
 
-            self.grad_k = grad_k
-            self.mat_jk = mat_jk
-            self.grad_j = grad_j
-            self.mat_ij = mat_ij
-
+           
 
             
     def modification_des_poids(self,M_i_o,eta,z_input,z_output,grad_i_o):
@@ -204,8 +194,7 @@ class ReseauRetroPropagation():
         (len_layer_output, len_layer_input_plus1forBias) = M_i_o.dim()
         
         len_layer_input = len_layer_input_plus1forBias - 1
-
-        
+       
         for j in range(len_layer_output):  # line
             
             for i in range(len_layer_input): # column , parcours les colonnes de la ligne sauf le bias
@@ -237,8 +226,6 @@ class ReseauRetroPropagation():
             
 if __name__ == '__main__':
     
-    trace = False
-    trace_full = False
 
     print('################## NOT ##################')
     r1 = ReseauRetroPropagation(1,2,1,nbiter=10000,eta=0.5)
