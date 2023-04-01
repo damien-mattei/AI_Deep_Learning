@@ -54,6 +54,7 @@ class ReseauRetroPropagation():
         # >>> grad
         # [[0, 0], [0, 0, 0], [0]]
         self.grad = [ [0] * n for n in nc ]    # gradients locaux des neurones cachés et gradient sur la couche de sortie
+        # grad[0] is useless but keep same index with z
         
         self.nbiter = nbiter
         self.eta = eta                  # "learning rate" 
@@ -94,7 +95,7 @@ class ReseauRetroPropagation():
             # update the variable when necessary
             self.z[i+1] = z[i+1]
 
-        
+        #print("accepte_et_propage : self.z[i+1] ="); print(self.z[i+1])
         #return self.z[i+1]              # et retour des sorties
 
 
@@ -117,10 +118,10 @@ class ReseauRetroPropagation():
               
             # RETRO_PROPAGATION VERS L'ARRIERE, EN DEUX TEMPS
 
-            # note: i just reference the variables for code readness (hide all the self keyword)
+            # note: i just use local reference for the variables for code readness (hide all the self keyword)
             z = self.z
 
-            i = len(z) - 1
+            i = i_output_layer = len(z) - 1 # start at index i of the ouput layers
 
             grad = self.grad
             
@@ -134,53 +135,36 @@ class ReseauRetroPropagation():
             error *= 0.5
             #print(it)
             #print(error)
-            if it == nbiter-1 : self.error = error                     # mémorisation de l'erreur totale à la dernière itération
+            if it == nbiter-1 : self.error = error                # mémorisation de l'erreur totale à la dernière itération
 
-            # modification des poids j->k
-            mat_jk = self.mat_jk # read/write data
+            # modification des poids de la matrice de transition de la derniére couche de neurones cachés à la couche de sortie
+            mat = self.mat # read/write data
 
-            z_i = self.z_i
-            ne = len(z_i)
-            z_j = self.z_j
-            nc = len(z_j)
             eta = self.eta
-            
-           
-            # (test fait: modifier la matrice apres le calcul du gradient de la couche j , conclusion: ne change pas la convergence de l'algo)
-
-            self.modification_des_poids(mat_jk,eta,z_j,z_k,grad_k)
-                       
-            # for k in range(ns): # line
-            #     for j in range(nc): # column , parcours les colonnes de la ligne sauf le bias
-            #         mat_jk[k][j+1] -= - eta * z_j[j] * z_k[k] * (1 - z_k[k]) * grad_k[k]
-            #     # and update the bias
-            #     mat_jk[k][0] -= - eta * 1.0 * z_k[k] * (1 - z_k[k]) * grad_k[k]
-                                
-            # Réponse à la question "b4" : T_{jk} = z_k * (1-z_k) * w_{jk}
-
-
-            
-            # TEMPS 2. calcul des gradients locaux sur la couche j cachée (rétro-propagation), sauf pour le bias constant
-            grad_j = self.grad_j
-            
-            for j in range(nc):
-                grad_j[j] = sum(z_k[k] * (1 - z_k[k]) * mat_jk[k][j+1] * grad_k[k] for k in range(ns))
-                
-            
-            # modification des poids i->j
-            mat_ij = self.mat_ij
-             
-            self.modification_des_poids(mat_ij,eta,z_i,z_j,grad_j)
-            
-            # for j in range(nc):  # line
-                
-            #     for i in range(ne): # column , parcours les colonnes de la ligne sauf le bias
-            #         mat_ij[j][i+1] -= -eta * z_i[i] * z_j[j] * (1 - z_j[j]) * grad_j[j]
                     
-            #     # and update the bias
-            #     mat_ij[j][0] -= -eta * 1.0 * z_j[j] * (1 - z_j[j]) * grad_j[j]
+            # (test fait: modifier la matrice apres le calcul du gradient de la couche j (maintenant i-1) , conclusion: ne change pas la convergence de l'algo)
+
+            self.modification_des_poids(mat[i-1],eta,z[i-1],z[i],grad[i])
+
+            #print(mat[i-1])
+                        
+            # TEMPS 2. calcul des gradients locaux sur les couches cachées (rétro-propagation), sauf pour le bias constant
+
+            #print(i_output_layer)
+            for i in reversed(range(1,i_output_layer)) :
+
+                nc = len(z[i])
+                ns = len(z[i+1])
+                for j in range(nc):
+                    grad[i][j] = sum(z[i+1][k] * (1 - z[i+1][k]) * mat[i][k,j+1] * grad[i+1][k] for k in range(ns))
+
+                #print(grad[i])
                 
-          
+                # modification des poids de la matrice de transition de la couche i-1 à i
+         
+                self.modification_des_poids(mat[i-1],eta,z[i-1],z[i],grad[i])
+
+              
            
             # et l'on passe à l'exemple suivant
             
@@ -207,19 +191,16 @@ class ReseauRetroPropagation():
                 
     def dump(self,n,msg):     # dump du réseau en entrant dans l'itération numéro n
         print('---------- DUMP',msg,'itération numéro',n)
-        print('mat_ij :') ; print(self.mat_ij)
-        print('z_j  :',self.z_j)
-        print('grad_j :',self.grad_j)
-        print('mat_jk :') ; print(self.mat_jk)
-        print('z_k  :',self.z_k)
-        print('grad_k :',self.grad_k)
+        print('mat :') ; print(self.mat)
+        print('z  :',self.z)
+        print('grad :',self.grad)
         print()
 
     def test(self,Lexemples):
         print('Test des exemples :')
         for (entree,sortie_attendue) in Lexemples:
             self.accepte_et_propage(entree)
-            print(entree,'-->',self.z_k,': on attendait',sortie_attendue)
+            print(entree,'-->',self.z[len(self.z)-1],': on attendait',sortie_attendue)
 
 
 
@@ -228,7 +209,7 @@ if __name__ == '__main__':
     
 
     print('################## NOT ##################')
-    r1 = ReseauRetroPropagation(1,2,1,nbiter=10000,eta=0.5)
+    r1 = ReseauRetroPropagation([1,2,1],nbiter=10000,eta=0.5)
     Lexemples1 = [[[1],[0]],[[0],[1]]]
     START = time() ; r1.apprentissage(Lexemples1) ; END = time()
     r1.test(Lexemples1)
@@ -236,7 +217,7 @@ if __name__ == '__main__':
     print()
     
     print('################## XOR ##################')
-    r2 = ReseauRetroPropagation(2,3,1,nbiter=50000,eta=0.1)    # 2 entrées (+ bias), 3 neurones cachés (+ bias), 1 neurone en sortie
+    r2 = ReseauRetroPropagation([2,8,10,7,1],nbiter=50000,eta=0.1)    # 2 entrées (+ bias), 3 neurones cachés (+ bias), 1 neurone en sortie
     Lexemples2 = [[[1,0],[1]], [[0,0],[0]], [[0,1],[1]], [[1,1],[0]]]
     START = time() ; r2.apprentissage(Lexemples2) ; END = time()
     print('APPRENTISSAGE sur {} itérations, time = {:.2f}s'.format(r2.nbiter,END-START))

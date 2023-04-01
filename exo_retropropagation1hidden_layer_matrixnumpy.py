@@ -83,6 +83,7 @@ class ReseauRetroPropagation():
         self.z_j = z_j
         self.z_k = z_k
 
+        #print("accepte_et_propage : self.z_k ="); print(self.z_k)
         #return self.z_k               # et retour des sorties
 
 
@@ -125,7 +126,6 @@ class ReseauRetroPropagation():
             mat_jk = self.mat_jk # read/write data
 
             z_i = self.z_i
-            ne = len(z_i)
             z_j = self.z_j
             nc = len(z_j)
             eta = self.eta
@@ -133,7 +133,9 @@ class ReseauRetroPropagation():
             # (test fait: modifier la matrice apres le calcul du gradient de la couche j , conclusion: ne change pas la convergence de l'algo)
 
             self.modification_des_poids(mat_jk,eta,z_j,z_k,grad_k)
-                       
+
+            #print(mat_jk)
+            
             # for k in range(ns): # line
             #     for j in range(nc): # column , parcours les colonnes de la ligne sauf le bias
             #         mat_jk[k][j+1] -= - eta * z_j[j] * z_k[k] * (1 - z_k[k]) * grad_k[k]
@@ -150,6 +152,7 @@ class ReseauRetroPropagation():
             for j in range(nc):
                 grad_j[j] = sum(z_k[k] * (1 - z_k[k]) * mat_jk[k,j+1] * grad_k[k] for k in range(ns))
                 
+            #print(grad_j)
             
             # modification des poids i->j
             mat_ij = self.mat_ij
