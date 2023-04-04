@@ -1,7 +1,7 @@
 # L'algorithme de rétro-propagation du gradient dans un
 # réseau de neurones avec N couches cachées.
 
-# modifications par D. Mattei
+# modifié par D. Mattei
 
 from random import seed, uniform
 seed(1789)     # si vous voulez avoir les mêmes tirages aléatoires à chaque exécution du fichier !
