@@ -24,7 +24,18 @@ class MatError(Exception):     # juste pour la lisibilité des exceptions
 Numeric = Union[float, int]
 
 
-
+# m1=Matrix([[1,3],[-2,4],[0,-1]])
+# m2=Matrix([[1],[2]])
+# m3=Matrix([[1,3],[-2,4],[0,-1]])
+# >>> m1*m2*m3
+# Matrix.py : __mul__(Matrix,Matrix)
+# # Matrix constructor Matrix (function,Numeric,Numeric) #
+# Matrix.py : __mul__(Matrix,Matrix)
+# # Matrix constructor Matrix (function,Numeric,Numeric) #
+#       7.00	     21.00
+#       6.00	     18.00
+#      -2.00	     -6.00
+# Matrix @ 0x7fca8d71edd0 
 class Matrix:
     '''Construct an object Matrix.'''
 

@@ -155,7 +155,9 @@ class ReseauRetroPropagation():
 
                 nc = len(z[i])
                 ns = len(z[i+1])
+                
                 for j in range(nc):
+                    
                     grad[i][j] = sum(z[i+1][k] * (1 - z[i+1][k]) * mat[i][k][j+1] * grad[i+1][k] for k in range(ns))
 
                 #print(grad[i])
@@ -182,6 +184,7 @@ class ReseauRetroPropagation():
         for j in range(len_layer_output):  # line
             
             for i in range(len_layer_input): # column , parcours les colonnes de la ligne sauf le bias
+                
                 M_i_o[j][i+1] -= -eta * z_input[i] * z_output[j] * (1 - z_output[j]) * grad_i_o[j]
 
             # and update the bias
@@ -217,7 +220,7 @@ if __name__ == '__main__':
     print()
     
     print('################## XOR ##################')
-    r2 = ReseauRetroPropagation([2,8,10,7,1],nbiter=50000,eta=0.1)    # 2 entrées (+ bias), 3 neurones cachés (+ bias), 1 neurone en sortie
+    r2 = ReseauRetroPropagation([2,8,10,7,1],nbiter=50000,eta=0.1)    # 2 entrées (+ bias), 3 couches de neurones cachés (+ bias), 1 neurone en sortie
     Lexemples2 = [[[1,0],[1]], [[0,0],[0]], [[0,1],[1]], [[1,1],[0]]]
     START = time() ; r2.apprentissage(Lexemples2) ; END = time()
     print('APPRENTISSAGE sur {} itérations, time = {:.2f}s'.format(r2.nbiter,END-START))

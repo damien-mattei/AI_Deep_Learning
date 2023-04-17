@@ -233,8 +233,14 @@ class MatrixNumPy:
         if p1 != n2 : raise MatError('Produit de matrices impossible !')
       
         # le produit aura pour format (n1,p2)
-        return MatrixNumPy(numpy.matmul(self.A,m2.A))
-
+        #return MatrixNumPy(numpy.matmul(self.A,m2.A))
+        return MatrixNumPy(self.A @ m2.A)
         
+    # m1.A @ m2.A
+    # array([[ -3.5],
+    #        [ -9. ],
+    #        [-14.5],
+    #        [-20. ],
+    #        [-25.5]])
 
         

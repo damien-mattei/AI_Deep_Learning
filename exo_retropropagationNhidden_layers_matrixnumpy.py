@@ -217,7 +217,7 @@ if __name__ == '__main__':
     print()
     
     print('################## XOR ##################')
-    r2 = ReseauRetroPropagation([2,8,10,7,1],nbiter=50000,eta=0.1)    # 2 entrées (+ bias), 3 neurones cachés (+ bias), 1 neurone en sortie
+    r2 = ReseauRetroPropagation([2,8,10,7,1],nbiter=50000,eta=0.1)    # 2 entrées (+ bias), 3 couches de neurones cachés (+ bias), 1 neurone en sortie
     Lexemples2 = [[[1,0],[1]], [[0,0],[0]], [[0,1],[1]], [[1,1],[0]]]
     START = time() ; r2.apprentissage(Lexemples2) ; END = time()
     print('APPRENTISSAGE sur {} itérations, time = {:.2f}s'.format(r2.nbiter,END-START))
