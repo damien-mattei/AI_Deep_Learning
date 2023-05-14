@@ -3,20 +3,31 @@
 
 #  D. Mattei
 
-# python3.7 -O exo_retropropagationNhidden_layers_matrix_sinus.py
+# python3.7 -O exo_retropropagationNhidden_layers_matrix_ztilde_in_derivative.py
 
 # use MacVim to show ALL the characters of this file (not Emacs, not Aquamacs)
 
 from random import seed, uniform,randint
 #seed(1789)     # si vous voulez avoir les mêmes tirages aléatoires à chaque exécution du fichier !
-from math import exp, pow, pi, sin , tanh
+from math import exp, pow, pi, sin , tanh , atan
 from Matrix import Matrix
 from time import time
 
 
 # sigmoïde
-def σ(x):
-    return 1/(1+ exp(-x))
+def σ(z̃):
+    try:
+        s = 1/(1+ exp(-z̃))
+    except OverflowError as e:
+        # Somehow no exception is caught here...
+        #print('OverflowError...')
+        #print("x=",x)
+        #sys.exit(1)
+        s = 0
+    except Exception as e:
+        print(e)
+    
+    return s
 
 
 # not used
@@ -27,24 +38,33 @@ def σࠤ(z):
 def tanhࠤ(x):
     return 1 - tanh(x)**2
 
-def der_tanh(x):
-    return 1 - x**2
+def der_tanh(z,z̃):
+    return 1 - z**2
 
-def der_σ(x):
-    return x*(1-x)
+def der_σ(z,z̃):
+    return z*(1-z)
 
 
-def leaky_RELU(x):
-    return max(0.01*x,x)
+def leaky_RELU(z̃):
+    return max(0.01*z̃,z̃)
 
-def der_leaky_RELU(x):
-    return 1 if x>=0 else 0.01
+def der_leaky_RELU(z,z̃):
+    return 1 if z>=0 else 0.01
 
-def RELU(x):
-    return max(0,x)
+def RELU(z̃):
+    return max(0,z̃)
 
-def der_RELU(x):
-    return 1 if x>=0 else 0
+def der_RELU(z,z̃):
+    return 1 if z>=0 else 0
+
+def swish(z̃):
+    return z̃ * σ(z̃)
+
+def der_swish(z,z̃):
+    return z + σ(z̃) * (1 - z)
+
+def der_atan(z,z̃):
+    return 1 / (1 + pow(z̃,2))
 
 
 
@@ -56,8 +76,8 @@ class ReseauRetroPropagation():
                  activation_function_hidden_layer_derivative=der_tanh,
                  activation_function_output_layer_derivative=der_tanh):
         
-        '''Construit un réseau de neurones avec une couche cachée. Il y a ne entrées (+ biais),
-        nc neurones dans la couche cachée (+ biais) et ns neurones en sortie.'''
+        '''Construit un réseau de neurones avec plusieurs couches cachées. Il y a des entrées (+ biais),
+        des neurones dans les couches cachées (+ biais) et des neurones en sortie dont les nombres sont définies dans nc.'''
 
         lnc = len(nc) # the total of all layer including input, output and hidden layers
         
@@ -66,6 +86,7 @@ class ReseauRetroPropagation():
         # >>> [ [0] * n for n in nc ]
         # [[0, 0], [0, 0, 0], [0]]      
         self.z = [ [0] * n for n in nc ] # les entrées concrètes seront fournies avec la méthode accepte
+        self.z̃ = [ [0] * n for n in nc ] # z̃[0] is not used as z[0] is x, the initial data 
                
         # nc[n] + 1 in the matrix size because we add one column of bias in the matrix for each hidden neuron of the hidden layer "c"
 
@@ -118,6 +139,7 @@ class ReseauRetroPropagation():
 
         # note: i just reference the variables for code readness (hide all the self keyword)
         z = self.z
+        z̃ = self.z̃ 
         M = self.M
         
         if len(x) != len(z[0]):
@@ -138,15 +160,17 @@ class ReseauRetroPropagation():
             # create a list with 1 in front for the bias coefficient
             z_1 = [1] + z[i]
             
-            z̃ = M[i] * z_1 # z̃ = matrix * iterable (list here)
+            z̃[i+1] = M[i] * z_1 # z̃ = matrix * iterable (list here)
             
             # calcul des réponses des neurones cachés
             #z[i+1] = list(map(σ,z̃))
             #z[i+1] = list(map(tanh,z̃))
-            z[i+1] = list(map(self.activation_function_hidden_layer,z̃)) 
+            z[i+1] = list(map(self.activation_function_hidden_layer,z̃[i+1])) 
 
             # update the variable when necessary
             self.z[i+1] = z[i+1]
+            self.z̃[i+1] = z̃[i+1]
+
 
         # output layer
         i = i + 1
@@ -156,14 +180,15 @@ class ReseauRetroPropagation():
         # create a list with 1 in front for the bias coefficient
         z_1 = [1] + z[i]
         
-        z̃ = M[i] * z_1 # z̃ = matrix * iterable (list here)
+        z̃[i+1] = M[i] * z_1 # z̃ = matrix * iterable (list here)
         
         # calcul des réponses des neurones de la couche de sortie
-        z[i+1] = list(map(self.activation_function_output_layer,z̃)) 
+        z[i+1] = list(map(self.activation_function_output_layer,z̃[i+1])) 
         
         # update the variable when necessary
         self.z[i+1] = z[i+1]
-        
+        self.z̃[i+1] = z̃[i+1]
+    
 
         #print("accepte_et_propage : self.z[i+1] ="); print(self.z[i+1])
         #return self.z[i+1]              # et retour des sorties
@@ -196,7 +221,8 @@ class ReseauRetroPropagation():
 
             # note: i just use local reference for the variables for code readness (hide all the self keyword)
             z = self.z
-            
+            z̃ = self.z̃
+
             i = i_output_layer = len(z) - 1 # start at index i of the ouput layer
 
             ᐁ = self.ᐁ
@@ -228,7 +254,7 @@ class ReseauRetroPropagation():
 
             მzⳆმz̃ = self.activation_function_output_layer_derivative
             
-            self.modification_des_poids(M[i-1],η,z[i-1],z[i],ᐁ[i],მzⳆმz̃)
+            self.modification_des_poids(M[i-1],η,z[i-1],z[i],z̃[i],ᐁ[i],მzⳆმz̃)
 
             #self.print_matrix_elements(M)
             
@@ -243,11 +269,11 @@ class ReseauRetroPropagation():
                 ns = len(z[i+1])
                 for j in range(nc):
                     
-                    ᐁ[i][j] = sum(მzⳆმz̃(z[i+1][k]) * M[i][k][j+1] * ᐁ[i+1][k] for k in range(ns))
+                    ᐁ[i][j] = sum(მzⳆმz̃(z[i+1][k],z̃[i+1][k]) * M[i][k][j+1] * ᐁ[i+1][k] for k in range(ns))
 
                 # modification des poids de la matrice de transition de la couche i-1 à i
          
-                self.modification_des_poids(M[i-1],η,z[i-1],z[i],ᐁ[i],მzⳆმz̃)
+                self.modification_des_poids(M[i-1],η,z[i-1],z[i],z̃[i],ᐁ[i],მzⳆმz̃)
 
             #self.print_matrix_elements(M)
 
@@ -261,7 +287,9 @@ class ReseauRetroPropagation():
 
             
     # modify coefficients layer
-    def modification_des_poids(self,M_i_o,η,z_input,z_output,ᐁ_i_o,მzⳆმz̃): # derivative of activation function of the layer
+    def modification_des_poids(self,M_i_o,η,z_input,z_output,z̃_output,ᐁ_i_o,მzⳆმz̃): # derivative of activation function of the layer
+        #print(z̃_output)
+        
         # the length of output and input layer with coeff. used for bias update             
         (len_layer_output, len_layer_input_plus1forBias) = M_i_o.dim()
         
@@ -271,10 +299,10 @@ class ReseauRetroPropagation():
             
             for i in range(len_layer_input): # column , parcours les colonnes de la ligne sauf le bias
 
-                M_i_o[j][i+1] -= -η * z_input[i] * მzⳆმz̃(z_output[j]) * ᐁ_i_o[j]
+                M_i_o[j][i+1] -= -η * z_input[i] * მzⳆმz̃(z_output[j],z̃_output[j]) * ᐁ_i_o[j]
 
             # and update the bias
-            M_i_o[j][0] -= -η * 1.0 * მzⳆმz̃(z_output[j]) * ᐁ_i_o[j]
+            M_i_o[j][0] -= -η * 1.0 * მzⳆმz̃(z_output[j],z̃_output[j]) * ᐁ_i_o[j]
                 
             
                 
@@ -318,10 +346,11 @@ if __name__ == '__main__':
     #print("r2.mat_ij=",r2.mat_ij)
 
     print('################## SINUS ##################')
-    r3 = ReseauRetroPropagation([1,30,30,30,1],50000,0.01,0.000001,tanh,tanh,der_tanh,der_tanh)
+    #r3 = ReseauRetroPropagation([1,30,30,30,1],50000,0.01,0.000001,tanh,tanh,der_tanh,der_tanh)
+    r3 = ReseauRetroPropagation([1,30,30,30,1],250000,0.01,0.000001,atan,tanh,der_atan,der_tanh)
     #r3 = ReseauRetroPropagation([1,30,30,30,1],50000,0.01,0.000001,leaky_RELU,tanh,der_leaky_RELU,der_tanh)
     #r3 = ReseauRetroPropagation([1,70,70,1],nbiter=50000,ηₛ=0.01,ηₑ=0.000001) 
-    Llearning = [ [[x],[sin(x)]] for x in [ uniform(-pi,pi) for n in range(1000)] ]
+    Llearning = [ [[x],[sin(x)]] for x in [ uniform(-pi,pi) for n in range(10000)] ]
     Ltest = [ [[x],[sin(x)]] for x in [ uniform(-pi/2,pi/2) for n in range(10)] ]
     START = time() ; r3.apprentissage(Llearning) ; END = time()
     print('APPRENTISSAGE sur {} itérations, time = {:.2f}s'.format(r3.nbiter,END-START))
