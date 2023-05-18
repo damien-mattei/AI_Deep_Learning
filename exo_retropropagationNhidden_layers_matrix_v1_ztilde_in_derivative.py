@@ -8,7 +8,7 @@
 # use MacVim to show ALL the characters of this file (not Emacs, not Aquamacs)
 
 from random import seed, uniform,randint
-#seed(1789)     # si vous voulez avoir les mêmes tirages aléatoires à chaque exécution du fichier !
+seed(1789)     # si vous voulez avoir les mêmes tirages aléatoires à chaque exécution du fichier !
 from math import exp, pow, pi, sin , tanh , atan
 from Matrix import Matrix
 from time import time
@@ -347,9 +347,10 @@ if __name__ == '__main__':
 
     print('################## SINUS ##################')
     #r3 = ReseauRetroPropagation([1,30,30,30,1],50000,0.01,0.000001,tanh,tanh,der_tanh,der_tanh)
-    r3 = ReseauRetroPropagation([1,30,30,30,1],250000,0.01,0.000001,atan,tanh,der_atan,der_tanh)
+    #r3 = ReseauRetroPropagation([1,30,30,30,1],5000,0.01,0.000001,tanh,tanh,der_tanh,der_tanh)
+    #r3 = ReseauRetroPropagation([1,30,30,30,1],250000,0.01,0.000001,atan,tanh,der_atan,der_tanh)
     #r3 = ReseauRetroPropagation([1,30,30,30,1],50000,0.01,0.000001,leaky_RELU,tanh,der_leaky_RELU,der_tanh)
-    #r3 = ReseauRetroPropagation([1,70,70,1],nbiter=50000,ηₛ=0.01,ηₑ=0.000001) 
+    r3 = ReseauRetroPropagation([1,70,70,1],nbiter=50000,ηₛ=0.01,ηₑ=0.000001) 
     Llearning = [ [[x],[sin(x)]] for x in [ uniform(-pi,pi) for n in range(10000)] ]
     Ltest = [ [[x],[sin(x)]] for x in [ uniform(-pi/2,pi/2) for n in range(10)] ]
     START = time() ; r3.apprentissage(Llearning) ; END = time()
