@@ -359,7 +359,7 @@ if __name__ == '__main__':
     print("Error=") ; print(r3.error)
     
     # COMPLEMENTS EN LIGNE
-    from webbrowser import open as browse
+    #from webbrowser import open as browse
     # Beaucoup de matériel sur la page Web de Geoffrey Hinton à Toronto, en particulier
     # l'article paru dans la revue "Nature" de 2015, et l'ancien MOOC de 2012 :
     #browse('https://www.cs.toronto.edu/~hinton/')
