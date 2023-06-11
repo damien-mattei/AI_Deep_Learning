@@ -146,8 +146,8 @@ class ReseauRetroPropagation():
         if len(x) != len(z[0]):
             raise ValueError("Mauvais nombre d'entrées !")
         
-        z[0] = x       # on ne touche pas au biais
-        self.z[0] = z[0]
+        #z[0] = x       # on ne touche pas au biais
+        self.z[0] = z[0] = x
         
         # propagation des entrées vers la sortie
 
@@ -365,10 +365,10 @@ if __name__ == '__main__':
     #print("r2.M=",r2.M)
 
     print('################## SINUS ##################')
-    r3 = ReseauRetroPropagation([1,30,30,30,1],50000,0.1,0.000001,tanh,tanh,der_tanh,der_tanh)
+    #r3 = ReseauRetroPropagation([1,30,30,30,1],50000,0.1,0.000001,tanh,tanh,der_tanh,der_tanh)
     #r3 = ReseauRetroPropagation([1,30,30,30,1],50000,0.01,0.000001,atan,tanh,der_atan,der_tanh)
     #r3 = ReseauRetroPropagation([1,70,70,1],50000,0.01,0.000001,tanh,tanh,der_tanh,der_tanh)
-    #r3 = ReseauRetroPropagation([1,70,70,1],50000,0.01,0.000001,atan,tanh,der_atan,der_tanh)
+    r3 = ReseauRetroPropagation([1,70,70,1],50000,0.01,0.000001,atan,tanh,der_atan,der_tanh)
     Llearning = [ [[x],[sin(x)]] for x in [ uniform(-pi,pi) for n in range(10000)] ]
     Ltest = [ [[x],[sin(x)]] for x in [ uniform(-pi/2,pi/2) for n in range(10)] ]
     START = time() ; r3.apprentissage(Llearning) ; END = time()
