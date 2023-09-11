@@ -25,12 +25,11 @@
 
 (require "matrix.rkt")
 
-(require "matrix-by-vectors.rkt")
 
 (include "../Scheme-PLUS-for-Racket/main/Scheme-PLUS-for-Racket/Scheme+.rkt")
 
-(require "../Scheme-PLUS-for-Racket/main/Scheme-PLUS-for-Racket/overload.rkt")
 
+(require "../Scheme-PLUS-for-Racket/main/Scheme-PLUS-for-Racket/overload.rkt")
 
 (include "../Scheme-PLUS-for-Racket/main/Scheme-PLUS-for-Racket/assignment.rkt") ; all sort ofassignment with <- 
 (include "../Scheme-PLUS-for-Racket/main/Scheme-PLUS-for-Racket/apply-square-brackets.rkt") ; all sort of indexing with [] 
@@ -43,23 +42,19 @@
 
 ; to take in account the new overloaded operators scheme-infix.rkt must be included
 ; after the overloading first stage definition of operators
-(include "../Scheme-PLUS-for-Racket/main/Scheme-PLUS-for-Racket/scheme-infix.rkt") ; add operator precedence to infix notation
+(include "../Scheme-PLUS-for-Racket/main/Scheme-PLUS-for-Racket/scheme-infix.rkt")
 
 
 ; second stage overloading
 (overload-existing-operator + vector-append (vector? vector?))
+
 (overload-existing-operator * multiply-flomat-vector (flomat? vector?))
-(overload-existing-operator * multiply-matrix-vector (matrix-vect? vector?))
-
-
-(overload-square-brackets matrix-vect-ref matrix-vect-set!  (matrix-vect? number? number?))
-(overload-square-brackets matrix-vect-line-ref matrix-vect-line-set! (matrix-vect? number?))
-
 
 ;; return a number in ]-1,1[
 ;; the dummy parameter is needed by a flomat procedure
-(define (uniform-dummy dummy) {(random) * (if {(random 2) = 0} 1 -1)})  ; we randomly choose the sign of the random number
-
+(define (uniform-dummy dummy) {(random) * (if {(random 2) = 0} ; we randomly choose the sign of the random number
+		         		1
+			        	-1)})
 
 ; return a random number between [inf, sup]
 (define (uniform-interval inf sup)
@@ -205,7 +200,7 @@ but will it works with Scheme+ parser?
 
 		     ;; create an array with 1 in front for the bias coefficient
 		    
-		     {z_1 <- #(1) + z[i]} ; + operator has been overloaded to append scheme vectors
+		     {z_1 <- #(1) + z[i]}
 
 		     {z̃[i + 1] <- M[i] * z_1} ; z̃ = matrix * vector , return a vector
 

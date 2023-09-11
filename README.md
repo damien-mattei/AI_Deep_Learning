@@ -1,5 +1,5 @@
 # AI_Deep_Learning
-AI with Deep Learning using backpropagation and gradient descent
+Artificial Intelligence, Deep Learning: training an artificial neural network using backpropagation with gradient descent.
 ![white board](IMG_2595.JPG?raw=true "white board")
 
 Last version is

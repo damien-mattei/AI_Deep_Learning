@@ -3,7 +3,7 @@
 
 #  D. Mattei
 
-# python3.7 -O exo_retropropagationNhidden_layers_matrix_ztilde_in_derivative.py
+# python3.11 -O exo_retropropagationNhidden_layers_matrix_v2.py
 
 # use MacVim to show ALL the characters of this file (not Emacs, not Aquamacs)
 # jeu de couleurs: Torte ou Koehler
@@ -18,7 +18,7 @@ from time import time
 # sigmoïde
 def σ(z̃):
     try:
-        s = 1/(1+ exp(-z̃))
+        s = 1/(1+exp(-z̃))
     except OverflowError as e:
         # Somehow no exception is caught here...
         #print('OverflowError...')
@@ -71,7 +71,7 @@ def der_atan(z,z̃):
 
 class ReseauRetroPropagation():
     
-    def __init__(self,nc=[2,3,1], nbiter=3, ηₛ=1.0 , ηₑ=0.0001 ,
+    def __init__(self,nc=[2,3,1], nbiter=3, ηₛ=1.0 , #ηₑ=0.0001 ,
                  activation_function_hidden_layer=tanh,
                  activation_function_output_layer=tanh,
                  activation_function_hidden_layer_derivative=der_tanh,
@@ -123,7 +123,7 @@ class ReseauRetroPropagation():
 
         # "learning rate" 
         self.ηₛ = ηₛ
-        self.ηₑ = ηₑ
+        #self.ηₑ = ηₑ
         self.error = 0
 
         self.activation_function_hidden_layer = activation_function_hidden_layer
@@ -161,7 +161,7 @@ class ReseauRetroPropagation():
             # create a list with 1 in front for the bias coefficient
             z_1 = [1] + z[i]
             
-            z̃[i+1] = M[i] * z_1 # z̃ = matrix * iterable (list here)
+            z̃[i+1] = M[i] * z_1 # z̃ = matrix * iterable (list here) , return a list
             
             # calcul des réponses des neurones cachés
             #z[i+1] = list(map(σ,z̃))
@@ -190,9 +190,9 @@ class ReseauRetroPropagation():
         self.z[i+1] = z[i+1]
         self.z̃[i+1] = z̃[i+1]
     
-
         #print("accepte_et_propage : self.z[i+1] ="); print(self.z[i+1])
         #return self.z[i+1]              # et retour des sorties
+
 
 
     def print_matrix_elements(self,M):
@@ -344,7 +344,7 @@ if __name__ == '__main__':
     
 
     print('################## NOT ##################')
-    r1 = ReseauRetroPropagation([1,2,1],50000,10,0.001,σ,σ,der_σ,der_σ)
+    r1 = ReseauRetroPropagation([1,2,1],50000,10,σ,σ,der_σ,der_σ)
     Lexemples1 = [[[1],[0]],[[0],[1]]]
     START = time() ; r1.apprentissage(Lexemples1) ; END = time()
     r1.test(Lexemples1)
@@ -354,7 +354,7 @@ if __name__ == '__main__':
     
     print('################## XOR ##################')
     # 2 entrées (+ bias), 1 neurone en sortie
-    r2 = ReseauRetroPropagation([2,3,1],250000,10,0.001,σ,σ,der_σ,der_σ)
+    r2 = ReseauRetroPropagation([2,3,1],250000,10,σ,σ,der_σ,der_σ)
     #r2 = ReseauRetroPropagation([2,3,1],50000,1,0.001,σ,σ,der_σ,der_σ)
     #r2 = ReseauRetroPropagation([2,8,10,7,1],50000,0.1,0.001,σ,σ,der_σ,der_σ) 
     Lexemples2 = [[[1,0],[1]], [[0,0],[0]], [[0,1],[1]], [[1,1],[0]]]
@@ -365,10 +365,10 @@ if __name__ == '__main__':
     #print("r2.M=",r2.M)
 
     print('################## SINUS ##################')
-    #r3 = ReseauRetroPropagation([1,30,30,30,1],50000,0.1,0.000001,tanh,tanh,der_tanh,der_tanh)
-    #r3 = ReseauRetroPropagation([1,30,30,30,1],50000,0.01,0.000001,atan,tanh,der_atan,der_tanh)
-    #r3 = ReseauRetroPropagation([1,70,70,1],50000,0.01,0.000001,tanh,tanh,der_tanh,der_tanh)
-    r3 = ReseauRetroPropagation([1,70,70,1],50000,0.01,0.000001,atan,tanh,der_atan,der_tanh)
+    #r3 = ReseauRetroPropagation([1,30,30,30,1],50000,0.1,tanh,tanh,der_tanh,der_tanh)
+    #r3 = ReseauRetroPropagation([1,30,30,30,1],50000,0.01,atan,tanh,der_atan,der_tanh)
+    #r3 = ReseauRetroPropagation([1,70,70,1],50000,0.01,tanh,tanh,der_tanh,der_tanh)
+    r3 = ReseauRetroPropagation([1,70,70,1],50000,0.01,atan,tanh,der_atan,der_tanh)
     Llearning = [ [[x],[sin(x)]] for x in [ uniform(-pi,pi) for n in range(10000)] ]
     Ltest = [ [[x],[sin(x)]] for x in [ uniform(-pi/2,pi/2) for n in range(10)] ]
     START = time() ; r3.apprentissage(Llearning) ; END = time()

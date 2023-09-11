@@ -179,6 +179,11 @@ class Matrix:
     def app(self,v):                           # v = [a,b,c,d]
         '''Retourne l'application de la matrice self au vecteur v vu comme une liste
         plate. Le résultat est aussi une liste plate.'''
+
+        if __debug__:
+            print("Matrix.py : app")
+
+
         # transformation de la liste v en matrice uni-colonne
         mv = Matrix(list(map(lambda x:[x],v)))          # mv = [[a],[b],[c],[d]]
         # l'application n'est autre qu'un produit de matrices
