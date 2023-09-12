@@ -16,14 +16,12 @@
 ;; use in command line:
 ;; (base) mattei@pc-mattei:~/Dropbox/git/AI_Deep_Learning$ racket
 ;; Welcome to Racket v8.6 [cs].
-;; > (require "exo_retropropagationNhidden_layers_matrix_v2+.rkt")
+;; > (require "exo_retropropagationNhidden_layers_matrix_v2_by_vectors+.rkt")
 
 
 (provide (all-defined-out)) 
 
 (require srfi/42) ; Eager Comprehensions
-
-(require "matrix.rkt")
 
 (require "matrix-by-vectors.rkt")
 
@@ -48,7 +46,6 @@
 
 ; second stage overloading
 (overload-existing-operator + vector-append (vector? vector?))
-(overload-existing-operator * multiply-flomat-vector (flomat? vector?))
 (overload-existing-operator * multiply-matrix-vector (matrix-vect? vector?))
 
 
@@ -57,18 +54,13 @@
 
 
 ;; return a number in ]-1,1[
-;; the dummy parameter is needed by a flomat procedure
-(define (uniform-dummy dummy) {(random) * (if {(random 2) = 0} 1 -1)})  ; we randomly choose the sign of the random number
 
+(define (uniform-dummy dummy1 dummy2) {(random) * (if {(random 2) = 0} 1 -1)})  ; we randomly choose the sign of the random number
 
 ; return a random number between [inf, sup]
 (define (uniform-interval inf sup)
   {gap <+ {sup - inf}}
   {inf + gap * (random)})
-
-(overload-procedure uniform uniform-dummy (number?))
-
-(overload-procedure uniform uniform-interval (number? number?))
 
 
 ; sigmoïde
@@ -159,9 +151,7 @@ but will it works with Scheme+ parser?
 
 
 	 {M <+ (vector-ec (: n {lnc - 1}) ; vectors by eager comprehension (SRFI 42)
-			  ($+> ;; just a block that allow local definitions because vector-ec forbides new definitions
-			    (define-pointwise-unary uniform)
-			    (.uniform! (zeros {nc[n + 1]} {nc[n] + 1}))))} ;; flomat Matrix
+			  (create-matrix-vect-by-function uniform-dummy {nc[n + 1]} {nc[n] + 1}))} ;; Matrix-vect
 					   
 	 (display "M=") (display M) (newline)
 
@@ -206,6 +196,8 @@ but will it works with Scheme+ parser?
 		     ;; create an array with 1 in front for the bias coefficient
 		    
 		     {z_1 <- #(1) + z[i]} ; + operator has been overloaded to append scheme vectors
+
+		     ;;(display "z_1 = ") (display z_1) (newline)
 
 		     {z̃[i + 1] <- M[i] * z_1} ; z̃ = matrix * vector , return a vector
 
@@ -320,7 +312,7 @@ but will it works with Scheme+ parser?
 	(define (modification_des_poids M_i_o η z_input z_output z̃_output ᐁ_i_o მzⳆმz̃) ; derivative of activation function of the layer
 	 
 	  ; the length of output and input layer with coeff. used for bias update
-	  {(len_layer_output len_layer_input_plus1forBias) <+ (dim M_i_o)} ; use values and define-values to create bindings
+	  {(len_layer_output len_layer_input_plus1forBias) <+ (dim-matrix-vect M_i_o)} ; use values and define-values to create bindings
         
 	  {len_layer_input <+ {len_layer_input_plus1forBias - 1}}
 
@@ -411,15 +403,13 @@ but will it works with Scheme+ parser?
 				   (activation_function_hidden_layer_derivative der_atan)
 				   (activation_function_output_layer_derivative der_tanh))}
 
-{Llearning <+ (vector-ec (:list x (list-ec (: n 10000)
-					   (uniform (- pi) pi)))
-			 (cons (vector x) (vector (sin x))))   ; vectors by eager comprehension (SRFI 42)
-	   }  ; use pairs in Scheme instead of vectors in Python
+{Llearning <+ (vector-ec (:list x (list-ec (: n 10000)    ; vectors,lists by eager comprehension (SRFI 42)
+				      (uniform-interval (- pi) pi)))
+			 (cons (vector x) (vector (sin x))))}  ; use pairs in Scheme instead of vectors in Python
 
-{Ltest <+ (vector-ec (:list x (list-ec (: n 10)
-				       (uniform {(- pi) / 2} {pi / 2})))
-		     (cons (vector x) (vector (sin x))))   ; vectors by eager comprehension (SRFI 42)
-       }  ; use pairs in Scheme instead of vectors in Python
+{Ltest <+ (vector-ec (:list x (list-ec (: n 10) ; vectors,lists by eager comprehension (SRFI 42)
+				       (uniform-interval {(- pi) / 2} {pi / 2})))
+		     (cons (vector x) (vector (sin x))))}  ; use pairs in Scheme instead of vectors in Python
 
 
 (send r3 apprentissage Llearning)

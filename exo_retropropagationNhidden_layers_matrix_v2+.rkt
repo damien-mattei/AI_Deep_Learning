@@ -9,8 +9,8 @@
 ;  D. Mattei	
 
 
-; use MacVim to show ALL the characters of this file (not Emacs, not Aquamacs)
-					; jeu de couleurs: Torte ou Koehler
+; MacOS users : use MacVim to show ALL the characters of this file (not Emacs, not Aquamacs)
+;; jeu de couleurs: Torte ou Koehler
 
 ;; use in GUI 
 ;; use in command line:
@@ -28,10 +28,9 @@
 
 (include "../Scheme-PLUS-for-Racket/main/Scheme-PLUS-for-Racket/Scheme+.rkt")
 
-
 (require "../Scheme-PLUS-for-Racket/main/Scheme-PLUS-for-Racket/overload.rkt")
 
-(include "../Scheme-PLUS-for-Racket/main/Scheme-PLUS-for-Racket/assignment.rkt") ; all sort ofassignment with <- 
+(include "../Scheme-PLUS-for-Racket/main/Scheme-PLUS-for-Racket/assignment.rkt") ; all sort of assignment with <- 
 (include "../Scheme-PLUS-for-Racket/main/Scheme-PLUS-for-Racket/apply-square-brackets.rkt") ; all sort of indexing with [] 
 
 
@@ -52,9 +51,8 @@
 
 ;; return a number in ]-1,1[
 ;; the dummy parameter is needed by a flomat procedure
-(define (uniform-dummy dummy) {(random) * (if {(random 2) = 0} ; we randomly choose the sign of the random number
-		         		1
-			        	-1)})
+(define (uniform-dummy dummy) {(random) * (if {(random 2) = 0}  1 -1)}); we randomly choose the sign of the random number
+		         	
 
 ; return a random number between [inf, sup]
 (define (uniform-interval inf sup)
