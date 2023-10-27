@@ -5,7 +5,7 @@
 
 # python3.11 -O exo_retropropagationNhidden_layers_matrix_v2.py
 
-# use MacVim to show ALL the characters of this file (not Emacs, not Aquamacs)
+#  MacOS users : use MacVim to show ALL the characters of this file (not Emacs, not Aquamacs)
 # jeu de couleurs: Torte ou Koehler
 
 from random import seed, uniform,randint

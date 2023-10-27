@@ -21,33 +21,32 @@
 
 (provide (all-defined-out)) 
 
+;; this file must now be included in your main project file like this:
+;; at the beginning of your main file add
+;; for infix operator precedence:
+(define-namespace-anchor ankh)
+(define bsns (namespace-anchor->namespace ankh))
+(current-namespace bsns)
+
+
 (require srfi/42) ; Eager Comprehensions
 
-(require "matrix.rkt")
+(require (rename-in flomat (repeat repeat-flomat)
+			    (shape shape-flomat)
+			    (transpose transpose-flomat)))
 
+(require "matrix+.rkt")
 
-(include "../Scheme-PLUS-for-Racket/main/Scheme-PLUS-for-Racket/Scheme+.rkt")
-
-(require "../Scheme-PLUS-for-Racket/main/Scheme-PLUS-for-Racket/overload.rkt")
-
-(include "../Scheme-PLUS-for-Racket/main/Scheme-PLUS-for-Racket/assignment.rkt") ; all sort of assignment with <- 
-(include "../Scheme-PLUS-for-Racket/main/Scheme-PLUS-for-Racket/apply-square-brackets.rkt") ; all sort of indexing with [] 
-
+(require "../Scheme-PLUS-for-Racket/main/Scheme-PLUS-for-Racket/Scheme+.rkt")
 
 ; first stage overloading
 (define-overload-existing-operator +)
-(define-overload-existing-operator *)
 (define-overload-procedure uniform)
-
-; to take in account the new overloaded operators scheme-infix.rkt must be included
-; after the overloading first stage definition of operators
-(include "../Scheme-PLUS-for-Racket/main/Scheme-PLUS-for-Racket/scheme-infix.rkt")
 
 
 ; second stage overloading
 (overload-existing-operator + vector-append (vector? vector?))
 
-(overload-existing-operator * multiply-flomat-vector (flomat? vector?))
 
 ;; return a number in ]-1,1[
 ;; the dummy parameter is needed by a flomat procedure
@@ -84,11 +83,11 @@
 but will it works with Scheme+ parser?
 |#
 
-;> (for-racket ([x (in-range 0 3)]) (display x) (newline) )
+;> (for ([x (in-range 0 3)]) (display x) (newline) )
 ;0
 ;1
 ;2
-;> (for-racket ([x (reversed (in-range 0 3))]) (display x) (newline) )
+;> (for ([x (reversed (in-range 0 3))]) (display x) (newline) )
 ;2
 ;1
 ;0
@@ -150,11 +149,10 @@ but will it works with Scheme+ parser?
 
 	 (display "z̃=") (display z̃) (newline)
 
+	 (define-pointwise-unary uniform) ;; flomat library feature
 
 	 {M <+ (vector-ec (: n {lnc - 1}) ; vectors by eager comprehension (SRFI 42)
-			  ($+> ;; just a block that allow local definitions because vector-ec forbides new definitions
-			    (define-pointwise-unary uniform)
-			    (.uniform! (zeros {nc[n + 1]} {nc[n] + 1}))))} ;; flomat Matrix
+			  (.uniform! (zeros {nc[n + 1]} {nc[n] + 1})))} ;; flomat Matrix
 					   
 	 (display "M=") (display M) (newline)
 
@@ -198,7 +196,7 @@ but will it works with Scheme+ parser?
 
 		     ;; create an array with 1 in front for the bias coefficient
 		    
-		     {z_1 <- #(1) + z[i]}
+		     {z_1 <- #(1) + z[i]} ; + operator has been overloaded to append scheme vectors
 
 		     {z̃[i + 1] <- M[i] * z_1} ; z̃ = matrix * vector , return a vector
 
@@ -250,7 +248,7 @@ but will it works with Scheme+ parser?
 	  (declare x y)
 	  (for-racket ([it (in-range nbiter)]) ; le nombre d'itérations est fixé !
 
-		      (when {it % 1000 = 0}
+		      (when {it % 100 = 0}
 			(display it)(newline))
 
 		      ;(display it)(newline)
@@ -357,7 +355,7 @@ but will it works with Scheme+ parser?
 (newline)
 
 {r1 <+ (new ReseauRetroPropagation (nc #(1 2 1))
-				   (nbiter 50000)
+				   (nbiter 5000)
 				   (ηₛ 10)
 				   (activation_function_hidden_layer σ)
 				   (activation_function_output_layer σ)

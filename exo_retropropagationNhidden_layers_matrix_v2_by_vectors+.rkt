@@ -21,36 +21,26 @@
 
 (provide (all-defined-out)) 
 
+;; this file must now be included in your main project file like this:
+;; at the beginning of your main file add
+;; for infix operator precedence:
+(define-namespace-anchor ankh)
+(define bsns (namespace-anchor->namespace ankh))
+(current-namespace bsns)
+
 (require srfi/42) ; Eager Comprehensions
 
-(require "matrix-by-vectors.rkt")
+(require "matrix-by-vectors+.rkt")
 
-(include "../Scheme-PLUS-for-Racket/main/Scheme-PLUS-for-Racket/Scheme+.rkt")
-
-(require "../Scheme-PLUS-for-Racket/main/Scheme-PLUS-for-Racket/overload.rkt")
-
-
-(include "../Scheme-PLUS-for-Racket/main/Scheme-PLUS-for-Racket/assignment.rkt") ; all sort ofassignment with <- 
-(include "../Scheme-PLUS-for-Racket/main/Scheme-PLUS-for-Racket/apply-square-brackets.rkt") ; all sort of indexing with [] 
+(require "../Scheme-PLUS-for-Racket/main/Scheme-PLUS-for-Racket/Scheme+.rkt")
 
 
 ; first stage overloading
 (define-overload-existing-operator +)
-(define-overload-existing-operator *)
-(define-overload-procedure uniform)
-
-; to take in account the new overloaded operators scheme-infix.rkt must be included
-; after the overloading first stage definition of operators
-(include "../Scheme-PLUS-for-Racket/main/Scheme-PLUS-for-Racket/scheme-infix.rkt") ; add operator precedence to infix notation
 
 
 ; second stage overloading
 (overload-existing-operator + vector-append (vector? vector?))
-(overload-existing-operator * multiply-matrix-vector (matrix-vect? vector?))
-
-
-(overload-square-brackets matrix-vect-ref matrix-vect-set!  (matrix-vect? number? number?))
-(overload-square-brackets matrix-vect-line-ref matrix-vect-line-set! (matrix-vect? number?))
 
 
 ;; return a number in ]-1,1[
@@ -83,11 +73,11 @@
 but will it works with Scheme+ parser?
 |#
 
-;> (for-racket ([x (in-range 0 3)]) (display x) (newline) )
+;> (for ([x (in-range 0 3)]) (display x) (newline) )
 ;0
 ;1
 ;2
-;> (for-racket ([x (reversed (in-range 0 3))]) (display x) (newline) )
+;> (for ([x (reversed (in-range 0 3))]) (display x) (newline) )
 ;2
 ;1
 ;0
@@ -149,6 +139,7 @@ but will it works with Scheme+ parser?
 
 	 (display "z̃=") (display z̃) (newline)
 
+	 ;(display "infix-operators-lst=") (display infix-operators-lst) (newline)
 
 	 {M <+ (vector-ec (: n {lnc - 1}) ; vectors by eager comprehension (SRFI 42)
 			  (create-matrix-vect-by-function uniform-dummy {nc[n + 1]} {nc[n] + 1}))} ;; Matrix-vect
@@ -188,7 +179,7 @@ but will it works with Scheme+ parser?
 		(declare i) ; because the variable will be used outside the 'for' loop too
 		
 		;(for-racket ([i (in-range {n - 2})]) ; warning : in Racket the variable 'i' 
-		; is only seen inside the 'for-racket' but i need it ouside too
+		; is only seen inside the 'for' but i need it ouside too
 		(for ({i <- 0} {i < n - 2} {i <- i + 1}) ; personnal 'for' definition as in Javascript,C,C++,Java
 
 		     ;; calcul des stimuli reçus par la couche cachée d'indice i+1 à-partir de la précedente
@@ -356,7 +347,7 @@ but will it works with Scheme+ parser?
 (newline)
 
 {r1 <+ (new ReseauRetroPropagation (nc #(1 2 1))
-				   (nbiter 50000)
+				   (nbiter 5000)
 				   (ηₛ 10)
 				   (activation_function_hidden_layer σ)
 				   (activation_function_output_layer σ)
