@@ -32,8 +32,8 @@
 (require srfi/42) ; Eager Comprehensions
 
 (require (rename-in flomat (repeat repeat-flomat)
-			    (shape shape-flomat)
-			    (transpose transpose-flomat)))
+			   (shape shape-flomat)
+			   (transpose transpose-flomat)))
 
 (require "matrix+.rkt")
 
