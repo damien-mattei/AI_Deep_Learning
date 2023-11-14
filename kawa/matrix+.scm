@@ -2,52 +2,36 @@
 
 ;; Kawa version
 
-;; kawa curly-infix2prefix.scm ../AI_Deep_Learning/kawa/matrix+.scm > ../AI_Deep_Learning/kawa/matrix.scm
+;; kawa curly-infix2prefix4kawa.scm ../AI_Deep_Learning/kawa/matrix+.scm > ../AI_Deep_Learning/kawa/matrix.scm 
 
 ;; use with Scheme+: (require matrix)
 
-;;(module-name "matrix")
 
-;; (export multiply-matrix-matrix
-;; 	multiply-matrix-vector
-;; 	matrix
-;; 	matrix-v
-;; 	create-matrix-by-function
-;; 	dim-matrix
-;; 	matrix-ref
-;; 	matrix-set!
-;; 	matrix-line-ref
-;; 	matrix-line-set!
-;; 	vector->matrix-column
-;; 	matrix-column->vector)
+(module-name "matrix")
 
-(require 'srfi-1) ; any,every
-(require 'srfi-69) ;; hash table
+(export multiply-matrix-matrix
+	multiply-matrix-vector
+	matrix
+	matrix-v
+	create-matrix-by-function
+	dim-matrix
+	matrix-ref
+	matrix-set!
+	matrix-line-ref
+	matrix-line-set!
+	vector->matrix-column
+	matrix-column->vector
 
-;; try include , use include-relative if problems
-;; (include "../../Scheme-PLUS-for-Kawa/rec.scm") ; rec does  not exist in Kawa (no SRFI 31)
-;; (include "../../Scheme-PLUS-for-Kawa/def.scm")
-;; (include "../../Scheme-PLUS-for-Kawa/set-values-plus.scm")
-;; (include "../../Scheme-PLUS-for-Kawa/for_next_step.scm")
-;; (include "../../Scheme-PLUS-for-Kawa/declare.scm")
-;; (include "../../Scheme-PLUS-for-Kawa/condx.scm")
-;; (include "../../Scheme-PLUS-for-Kawa/block.scm")
-;; (include "../../Scheme-PLUS-for-Kawa/not-equal.scm")
-;; (include "../../Scheme-PLUS-for-Kawa/exponential.scm")
-;; (include "../../Scheme-PLUS-for-Kawa/while-do-when-unless.scm")
-;; (include "../../Scheme-PLUS-for-Kawa/repeat-until.scm")
-;; (include "../../Scheme-PLUS-for-Kawa/modulo.scm")
-;; (include "../../Scheme-PLUS-for-Kawa/bitwise.scm")
+	;;$ovrld-ht$
+	;;*
+	)
 
+(require Scheme+)
 
-;; (include "../../Scheme-PLUS-for-Kawa/slice.scm")
+;; first stage overloading
+(import (rename (scheme base) (* orig*)))
 
-;; (include "../../Scheme-PLUS-for-Kawa/scheme-infix.scm")
-
-;; (include "../../Scheme-PLUS-for-Kawa/assignment.scm")
-;; (include "../../Scheme-PLUS-for-Kawa/apply-square-brackets.scm")
-
-;; (include "../../Scheme-PLUS-for-Kawa/array.scm")
+(define-overload-existing-operator * orig*)
 
 
 ;; (matrix #(1 2 3))
@@ -112,10 +96,18 @@
     {sum <+ 0}
     (for ({k <+ 0} {k < p1} {k <- k + 1})
 	 {sum <- sum + v1[i][k] * v2[k][j]}))
+	 ;;{sum <- {sum + {v1[i][k] * v2[k][j]}}})
+    ;(display "sum=")(display sum) (newline)
+    ;sum)
 	
   {v <+ (create-vector-2d res n1 p2)}
   
   (matrix v))
+
+
+;; second stage overloading
+(overload-existing-operator * multiply-matrix-matrix (matrix? matrix?))
+
 
 
 
@@ -141,6 +133,10 @@
   {Mc <+ (vector->matrix-column v)}
   ;;(matrix-column->vector (multiply-matrix-matrix M Mc)))
   (matrix-column->vector {M * Mc}))
+
+
+(overload-existing-operator * multiply-matrix-vector (matrix? vector?))
+
 
 
 ;; define getter,setter

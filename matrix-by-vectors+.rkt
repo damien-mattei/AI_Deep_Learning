@@ -27,7 +27,7 @@
 
 (require (rename-in srfi/43 (vector-map vector-map-srfi-43)))  ; vector , warning vector-map has index as extra parameter...
 
-(require "../Scheme-PLUS-for-Racket/main/Scheme-PLUS-for-Racket/array.scm")
+(require "../Scheme-PLUS-for-Racket/main/Scheme-PLUS-for-Racket/array.rkt")
 
 (struct matrix-vect (v)) ;; matrix based on vector of vectors
 

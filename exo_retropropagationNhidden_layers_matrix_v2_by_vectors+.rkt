@@ -30,10 +30,9 @@
 
 (require srfi/42) ; Eager Comprehensions
 
-(require "matrix-by-vectors+.rkt")
-
 (require "../Scheme-PLUS-for-Racket/main/Scheme-PLUS-for-Racket/Scheme+.rkt")
 
+(require "matrix-by-vectors+.rkt")
 
 ; first stage overloading
 (define-overload-existing-operator +)
@@ -44,8 +43,9 @@
 
 
 ;; return a number in ]-1,1[
+;;(define (uniform-dummy dummy1 dummy2) {(random) * (if {(random 2) = 0} 1 -1)})  ; we randomly choose the sign of the random number
+(define (uniform-dummy dummy1 dummy2) {-1 + (random) * 2}) 
 
-(define (uniform-dummy dummy1 dummy2) {(random) * (if {(random 2) = 0} 1 -1)})  ; we randomly choose the sign of the random number
 
 ; return a random number between [inf, sup]
 (define (uniform-interval inf sup)
@@ -72,31 +72,6 @@
 #| this is a Scheme multi line comment,
 but will it works with Scheme+ parser?
 |#
-
-;> (for ([x (in-range 0 3)]) (display x) (newline) )
-;0
-;1
-;2
-;> (for ([x (reversed (in-range 0 3))]) (display x) (newline) )
-;2
-;1
-;0
-(define-syntax reversed ; same as Python : reversed(range(0,3))
-  
-  		(syntax-rules ()
-
-    			((_ (name end)) (begin
-					  (unless (equal? (quote in-range) (quote name)) 
-	       					(error "first argument is not in-range:" (quote name)))
-					  (in-range {end - 1} -1 -1)))
-
-			((_ (name start end)) (begin
-					  	(unless (equal? (quote in-range) (quote name)) 
-	       						(error "first argument is not in-range:" (quote name)))
-					  	(in-range {end - 1} {start - 1} -1)))))
-
-
-
 
 
 ; (make-object ReseauRetroPropagation)
@@ -125,8 +100,11 @@ but will it works with Scheme+ parser?
 
 	 ; les entrées concrètes seront fournies avec la méthode accepte
 	 ;; (field (z (vector-ec (: i (vector-length nc)) (make-vector {nc[i]} 0))))
-	 (field (z (vector-ec (:vector lg nc)
-			      (make-vector lg 0))))
+	 ;;(field (z (vector-ec (:vector lg nc)
+	;;		      (make-vector lg 0))))
+	 (field (z (vector-map (lambda (lg) (make-vector lg 0))
+			       nc)))
+
 	 ;; (field (z (for/vector ([lg nc])
 	 ;; 		       (make-vector lg 0))))
 
@@ -134,15 +112,21 @@ but will it works with Scheme+ parser?
 
 
 	 ; z̃[0] is not used as z[0] is x, the initial data
-	 (field (z̃ (vector-ec (:vector lg nc)
-			      (make-vector lg 0))))
+	 ;;(field (z̃ (vector-ec (:vector lg nc)
+		;;	      (make-vector lg 0))))
+	 (field (z̃ (vector-map (lambda (lg) (make-vector lg 0))
+			       nc)))
+
 
 	 (display "z̃=") (display z̃) (newline)
 
-	 ;(display "infix-operators-lst=") (display infix-operators-lst) (newline)
 
 	 {M <+ (vector-ec (: n {lnc - 1}) ; vectors by eager comprehension (SRFI 42)
-			  (create-matrix-vect-by-function uniform-dummy {nc[n + 1]} {nc[n] + 1}))} ;; Matrix-vect
+			  create-matrix-vect-by-function(uniform-dummy nc[n + 1] {nc[n] + 1}))} ;; Matrix-vect
+
+	 ;(field (M (vector-ec (: n {lnc - 1}) ; vectors by eager comprehension (SRFI 42)
+	 ;		  (create-matrix-vect-by-function uniform-dummy {nc[n + 1]} {nc[n] + 1})))) ;; Matrix-vect
+
 					   
 	 (display "M=") (display M) (newline)
 
@@ -205,6 +189,7 @@ but will it works with Scheme+ parser?
 		     the original Python code was:
 		     z[i+1] = list(map(self.activation_function_hidden_layer,z̃[i+1]))
 		     the Scheme+ port is below: |#
+		     
 		     {z[i + 1] <- vector-map(activation_function_hidden_layer z̃[i + 1])}
 
 		     ;(display "z[i + 1] = ") (display {z[i + 1]}) (newline)
@@ -228,7 +213,7 @@ but will it works with Scheme+ parser?
 		 {z[i + 1] <- vector-map(activation_function_output_layer z̃[i + 1])}
 		 ;(display "z[i + 1] = ") (display {z[i + 1]}) (newline)
 	
-	) ; end define/public
+	) ; end define
 
 
 		
@@ -394,6 +379,10 @@ but will it works with Scheme+ parser?
 				   (activation_function_hidden_layer_derivative der_atan)
 				   (activation_function_output_layer_derivative der_tanh))}
 
+(declare pi)
+{pi <- 4 * atan(1)}
+
+
 {Llearning <+ (vector-ec (:list x (list-ec (: n 10000)    ; vectors,lists by eager comprehension (SRFI 42)
 				      (uniform-interval (- pi) pi)))
 			 (cons (vector x) (vector (sin x))))}  ; use pairs in Scheme instead of vectors in Python
@@ -406,3 +395,9 @@ but will it works with Scheme+ parser?
 (send r3 apprentissage Llearning)
 
 (send r3 test Ltest)
+
+
+(newline)
+
+
+

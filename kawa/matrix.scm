@@ -1,5 +1,10 @@
-(require (quote srfi-1))
-(require (quote srfi-69))
+(module-name "matrix")
+(export multiply-matrix-matrix multiply-matrix-vector matrix matrix-v
+ create-matrix-by-function dim-matrix matrix-ref matrix-set! matrix-line-ref
+ matrix-line-set! vector->matrix-column matrix-column->vector)
+(require Scheme+)
+(import (rename (scheme base) (* orig*)))
+(define-overload-existing-operator * orig*)
 (define-simple-class matrix () (v :: vector)
  ((*init* (vParam :: vector)) (set! v vParam)))
 (define (create-matrix-by-function fct lin col)
@@ -18,6 +23,7 @@
    ($nfx$ sum <- sum + (bracket-apply (bracket-apply v1 i) k) *
     (bracket-apply (bracket-apply v2 k) j))))
  (<+ v (create-vector-2d res n1 p2)) (matrix v))
+(overload-existing-operator * multiply-matrix-matrix (matrix? matrix?))
 (define (matrix-v M) (slot-ref M (quote v)))
 (define (vector->matrix-column v)
  (matrix (vector-map (lambda (x) (make-vector 1 x)) v)))
@@ -25,6 +31,7 @@
  (vector-map (lambda (v2) (bracket-apply v2 0)) v))
 (define (multiply-matrix-vector M v) (<+ Mc (vector->matrix-column v))
  (matrix-column->vector (* M Mc)))
+(overload-existing-operator * multiply-matrix-vector (matrix? vector?))
 (define (matrix-ref M lin col) (<+ v (matrix-v M))
  (bracket-apply (bracket-apply v lin) col))
 (define (matrix-set! M lin col x) (<+ v (matrix-v M))
