@@ -3,6 +3,7 @@
  create-matrix-by-function dim-matrix matrix-ref matrix-set! matrix-line-ref
  matrix-line-set! vector->matrix-column matrix-column->vector)
 (require Scheme+)
+(require array)
 (import (rename (scheme base) (* orig*)))
 (define-overload-existing-operator * orig*)
 (define-simple-class matrix () (v :: vector)

@@ -13,7 +13,7 @@
 					; jeu de couleurs: Torte ou Koehler
 
 ;; use in GUI 
-;; use in command line:
+;; use in command line (3x faster than in GUI) :
 ;; (base) mattei@pc-mattei:~/Dropbox/git/AI_Deep_Learning$ racket
 ;; Welcome to Racket v8.6 [cs].
 ;; > (require "exo_retropropagationNhidden_layers_matrix_v2_by_vectors+.rkt")
@@ -226,7 +226,7 @@ but will it works with Scheme+ parser?
 	  (for-racket ([it (in-range nbiter)]) ; le nombre d'itérations est fixé !
 
 		      (when {it % 1000 = 0}
-			(display it)(newline))
+			(display "it=") (display it)(newline))
 
 		      ;(display it)(newline)
 		      

@@ -12,11 +12,12 @@
 
 ;; kawa curly-infix2prefix4kawa.scm ../AI_Deep_Learning/exo_retropropagationNhidden_layers_matrix_v2_by_vectors4kawa+.scm | tr -d '|' > ../AI_Deep_Learning/exo_retropropagationNhidden_layers_matrix_v2_by_vectors4kawa.scm
 
-; kawa -Dkawa.import.path=".:/Users/mattei/Dropbox/git/Scheme-PLUS-for-Kawa:./kawa"
+; kawa -Dkawa.import.path=".:/Users/mattei/Scheme-PLUS-for-Kawa:./kawa"
  
 
 
 ;; use: (load "exo_retropropagationNhidden_layers_matrix_v2_by_vectors4kawa.scm")
+
 
 (require 'srfi-69) ; hash table
 
@@ -30,6 +31,9 @@
 ;; first stage overloading
 (import (rename (scheme base) (+ orig+)))
 (import (rename (scheme base) (* orig*)))
+
+;(define orig+ +)
+;(define orig* *)
 
 (define-overload-existing-operator * orig*)
 (define-overload-existing-operator + orig+)
@@ -45,7 +49,24 @@
 (overload-existing-operator * multiply-matrix-matrix (matrix? matrix?))
 (overload-existing-operator * multiply-matrix-vector (matrix? vector?))
 
+;(define * (make-procedure method: (lambda (x ::number y ::number) (orig* x y))
+;			  method: (lambda (x ::matrix y ::matrix) (multiply-matrix-matrix  x y))
+;			  method: (lambda (x ::matrix y ::vector) (multiply-matrix-vector  x y))
+;			  method: (lambda lyst (apply orig* lyst))))
+
+
+(insert-operator! orig* *)
+
+
 (overload-existing-operator + vector-append (vector? vector?))
+
+;(define + (make-procedure method: (lambda (x ::number y ::number) (orig+ x y))
+;			  method: (lambda (x ::vector y ::vector) (vector-append x y))
+;			  method: (lambda lyst (apply orig+ lyst))))
+
+
+(insert-operator! orig+ +)
+
 
 (overload-procedure random java.lang.Math:random ())
 (overload-procedure random random-int (integer?))
@@ -396,13 +417,16 @@
 
 {r3 <+ (ReseauRetroPropagation #(1 70 70 1) 50000 0.01 atan tanh der_atan der_tanh)}
 
+(declare pi)
+{pi <- 4 * atan(1)}
+
 {Llearning <+ (vector-map (list->vector (map (in-range 10000)
-			       	        (lambda (n) (uniform-interval (- pi) pi))))
-			 (cons (vector x) (vector (sin x))))}  ; use pairs in Scheme instead of vectors in Python
+			       	             (lambda (n) (uniform-interval (- pi) pi))))
+			  (lambda (x) (cons (vector x) (vector (sin x)))))}  ; use pairs in Scheme instead of vectors in Python
 
 {Ltest <+ (vector-map (list->vector (map (in-range 10000)
-			       	        (lambda (n) (uniform-interval {(- pi) / 2} {pi / 2}))))
-			 (cons (vector x) (vector (sin x))))}  ; use pairs in Scheme instead of vectors in Python
+			       	         (lambda (n) (uniform-interval {(- pi) / 2} {pi / 2}))))
+		      (lambda (x) (cons (vector x) (vector (sin x)))))}  ; use pairs in Scheme instead of vectors in Python
 
 
 

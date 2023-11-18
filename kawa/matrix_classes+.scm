@@ -2,12 +2,19 @@
 
 ;; Kawa version
 
-;; kawa curly-infix2prefix4kawa.scm ../AI_Deep_Learning/kawa/matrix+.scm > ../AI_Deep_Learning/kawa/matrix.scm 
+;; kawa curly-infix2prefix4kawa.scm ../AI_Deep_Learning/kawa/matrix_classes+.scm | tr -d '|' > ../AI_Deep_Learning/kawa/matrix_classes.scm
 
-;; use with Scheme+: (require matrix)
+;; kawa -d classes -Dkawa.import.path=".:/Users/mattei/Scheme-PLUS-for-Kawa:./kawa" -C kawa/matrix_classes.scm
 
 
-(module-name "matrix")
+;; use with Scheme+:
+
+;; kawa -Dkawa.import.path=".:/Users/mattei/Scheme-PLUS-for-Kawa:./kawa:./classes"
+  
+;; (require matrix_classes)
+
+
+(module-name "matrix_classes")
 
 (export multiply-matrix-matrix
 	multiply-matrix-vector
@@ -24,17 +31,12 @@
 
 	;;$ovrld-ht$
 	;;*
+	⋅ ;; matrix and vector internal and external multiplication
 	)
 
 (require Scheme+)
 
 (require array)
-
-;; first stage overloading
-;(define orig* *)
-(import (rename (scheme base) (* orig*)))
-
-(define-overload-existing-operator * orig*)
 
 
 ;; (matrix #(1 2 3))
@@ -86,6 +88,12 @@
 ;; #(#(0 1 2) #(1 2 3))
 ;; #|kawa:92|# (matrix-v M2)
 ;; #(#(0 1) #(1 2) #(2 3))
+
+;#|kawa:7|# (define M1xM2 (⋅ M1 M2))
+;#|kawa:8|# M1xM2
+;matrix@25f7391e
+;#|kawa:9|# (matrix-v M1xM2)
+;#(#(5 8) #(8 14))
 (define (multiply-matrix-matrix M1 M2)
 
   {(n1 p1) <+ (dim-matrix M1)}
@@ -109,9 +117,13 @@
   (matrix v))
 
 
-;; second stage overloading
-(overload-existing-operator * multiply-matrix-matrix (matrix? matrix?))
+(define ⋅ (make-procedure method: (lambda (x ::number y ::number) (* x y))
+			  method: (lambda (x ::matrix y ::matrix) (multiply-matrix-matrix  x y))
+			  method: (lambda (x ::matrix y ::vector) (multiply-matrix-vector  x y))
+			  method: (lambda lyst (apply * lyst))))
 
+
+(insert-operator! * ⋅)
 
 
 
@@ -136,10 +148,7 @@
 (define (multiply-matrix-vector M v) ;; args: matrix ,vector ;  return vector
   {Mc <+ (vector->matrix-column v)}
   ;;(matrix-column->vector (multiply-matrix-matrix M Mc)))
-  (matrix-column->vector {M * Mc}))
-
-
-(overload-existing-operator * multiply-matrix-vector (matrix? vector?))
+  (matrix-column->vector {M ⋅ Mc}))
 
 
 
