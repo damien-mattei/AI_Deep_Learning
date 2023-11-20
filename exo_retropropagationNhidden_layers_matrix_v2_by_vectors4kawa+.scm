@@ -103,14 +103,12 @@
         
 	  {len_layer_input <+ {len_layer_input_plus1forBias - 1}}
 
-	  (for-each-in (in-range len_layer_output) ; line
-	     (lambda (j) 
-		(for-each-in (in-range len_layer_input) ; column , parcours les colonnes de la ligne sauf le bias
-		  (lambda (i)  
-		    {M_i_o[j {i + 1}]  <-  M_i_o[j {i + 1}] - {(- η) * z_input[i] * მzⳆმz̃(z_output[j] z̃_output[j]) * ᐁ_i_o[j]}}))
+	  (for-each-in (j (in-range len_layer_output)) ; line
+		(for-each-in (i (in-range len_layer_input)) ; column , parcours les colonnes de la ligne sauf le bias
+		    {M_i_o[j {i + 1}]  <-  M_i_o[j {i + 1}] - {(- η) * z_input[i] * მzⳆმz̃(z_output[j] z̃_output[j]) * ᐁ_i_o[j]}})
 
 		; and update the bias
-            	{M_i_o[j 0]  <-  M_i_o[j 0] - {(- η) * 1.0 * მzⳆმz̃(z_output[j] z̃_output[j]) * ᐁ_i_o[j]}})))
+            	{M_i_o[j 0]  <-  M_i_o[j 0] - {(- η) * 1.0 * მzⳆმz̃(z_output[j] z̃_output[j]) * ᐁ_i_o[j]}}))
 	
 
 
@@ -254,8 +252,7 @@
   {ip <+ 0} ; numéro de l'exemple courant
 
   (declare x y)
-  (for-each-in (in-range nbiter) ; le nombre d'itérations est fixé !
-	       (lambda (it)
+  (for-each-in (it (in-range nbiter)) ; le nombre d'itérations est fixé !
 		 (when {it % 1000 = 0}
 		       (display it)(newline))
 
@@ -276,10 +273,9 @@
 		 
 
 		 ;; TEMPS 1. calcul des gradients locaux sur la couche k de sortie (les erreurs commises)
-		 (for-each-in (in-range ns)
-			      (lambda (k)
+		 (for-each-in (k (in-range ns))
 				{ᐁ[i][k] <- y[k] - z[i][k]}     ; gradient sur un neurone de sortie (erreur locale)
-				{err <- err + ᐁ[i][k] ** 2}))    ; l'erreur quadratique totale
+				{err <- err + ᐁ[i][k] ** 2})    ; l'erreur quadratique totale
 
 		 {err <- err * 0.5}
 
@@ -297,27 +293,23 @@
 
 		 {მzⳆმz̃ <- activation_function_hidden_layer_derivative}
 
-		 (for-each-in (reversed (in-range 1 i_output_layer))
-			      (lambda (i)
+		 (for-each-in (i (reversed (in-range 1 i_output_layer)))
 				{nc <+ vector-length(z[i])}
 				{ns <+ vector-length(z[i + 1])}
-				(for-each-in (in-range nc)
-					     (lambda (j)
+				(for-each-in (j (in-range nc))
 					       {k <+ 0}
 					       {ᐁ[i][j] <- ($+>
 							    {sum <+ 0}  
-							    (for-each-in (in-range ns)
-									 (lambda (k)
-									   {sum <- sum + მzⳆმz̃(z[i + 1][k] z̃[i + 1][k]) * M[i][k {j + 1}] * ᐁ[i + 1][k]}))
-							    sum)}))
+							    (for-each-in (k (in-range ns))
+									   {sum <- sum + მzⳆმz̃(z[i + 1][k] z̃[i + 1][k]) * M[i][k {j + 1}] * ᐁ[i + 1][k]})
+							    sum)})
 				;; modification des poids de la matrice de transition de la couche i-1 à i
-				{modification_des_poids(M[i - 1] ηₛ  z[i - 1] z[i] z̃[i] ᐁ[i] მzⳆმz̃)}))
+				{modification_des_poids(M[i - 1] ηₛ  z[i - 1] z[i] z̃[i] ᐁ[i] მzⳆმz̃)})
 
 		 ;; et l'on passe à l'exemple suivant
 		 
 		 {ip <- random(vector-length(Lexemples))}
 
-		 ) ; end lambda it
 	       ) ; end for it
   ) ; end define/public
 
@@ -331,13 +323,12 @@
           {err <+ 0}
 
 	  (declare entree sortie_attendue ᐁ)
-	  (for-each-in Lexemples
-	      (lambda (entree-sortie_attendue) 
+	  (for-each-in (entree-sortie_attendue Lexemples)
 		{(entree sortie_attendue) <- entree-sortie_attendue} ; use pairs in Scheme instead of tuples and vectors in Python
 		(accepte_et_propage entree)
 		(display (format #t "~a --> ~a : on attendait ~a~%" entree {z[vector-length(z) - 1]} sortie_attendue))  ; ~% is(newline)
 		{ᐁ <- sortie_attendue[0] - z[vector-length(z) - 1][0]} ; erreur sur un element
-		{error <- error + ᐁ ** 2})) ; l'erreur quadratique totale
+		{error <- error + ᐁ ** 2}) ; l'erreur quadratique totale
 		
 	  {err <- err * 0.5}
 	  (display "Error on examples=") (display error) (newline))

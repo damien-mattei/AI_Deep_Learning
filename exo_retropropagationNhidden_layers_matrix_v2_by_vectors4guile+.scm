@@ -45,8 +45,43 @@
   {gap <+ {sup - inf}}
   {inf + (random {gap * 1.0})})
 
+; sigmoïde
+(define (σ z̃) 
+  {1 / {1 + (exp (- z̃))}})
 
-(for ({i <+ 0} {i < 3} {i <- i + 1})
-     (display i) (newline))
+; some derivatives
+(define (der_tanh z z̃)
+  {1 - z ** 2})	
+
+(define (der_σ z z̃)
+    {z * {1 - z}})
+
+(define (der_atan z z̃)
+  {1 / {1 + z̃ ** 2}})
+
+
+
+#| this is a Scheme multi line comment,
+but will it works with Scheme+ parser?
+|#
+
+; modify coefficients layer
+(define (modification_des_poids M_i_o η z_input z_output z̃_output ᐁ_i_o მzⳆმz̃) ; derivative of activation function of the layer
+	 
+	  ; the length of output and input layer with coeff. used for bias update
+	  {(len_layer_output len_layer_input_plus1forBias) <+ (dim-matrix M_i_o)} ; use values and define-values to create bindings
+        
+	  {len_layer_input <+ {len_layer_input_plus1forBias - 1}}
+
+	  (for-each-in (j (in-range len_layer_output)) ; line
+		(for-each-in (i (in-range len_layer_input)) ; column , parcours les colonnes de la ligne sauf le bias
+		    {M_i_o[j {i + 1}]  <-  M_i_o[j {i + 1}] - {(- η) * z_input[i] * მzⳆმz̃(z_output[j] z̃_output[j]) * ᐁ_i_o[j]}})
+
+		; and update the bias
+            	{M_i_o[j 0]  <-  M_i_o[j 0] - {(- η) * 1.0 * მzⳆმz̃(z_output[j] z̃_output[j]) * ᐁ_i_o[j]}}))
+	
+
+
+
 
 
