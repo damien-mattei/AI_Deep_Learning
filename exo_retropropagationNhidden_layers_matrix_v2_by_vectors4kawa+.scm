@@ -410,14 +410,18 @@
 
 (declare pi)
 {pi <- 4 * atan(1)}
+;(display pi)
+;(newline)
+{Llearning <+ (vector-map (lambda (x) (cons (vector x) (vector (sin x))))  ; use pairs in Scheme instead of vectors in Python
+			  (list->vector (map (lambda (n) (uniform-interval (- pi) pi))
+					(in-range 10000))))}
 
-{Llearning <+ (vector-map (list->vector (map (in-range 10000)
-			       	             (lambda (n) (uniform-interval (- pi) pi))))
-			  (lambda (x) (cons (vector x) (vector (sin x)))))}  ; use pairs in Scheme instead of vectors in Python
+(display "Llearning=")  (display Llearning) (newline)
 
-{Ltest <+ (vector-map (list->vector (map (in-range 10000)
-			       	         (lambda (n) (uniform-interval {(- pi) / 2} {pi / 2}))))
-		      (lambda (x) (cons (vector x) (vector (sin x)))))}  ; use pairs in Scheme instead of vectors in Python
+{Ltest <+ (vector-map (lambda (x) (cons (vector x) (vector (sin x))))  ; use pairs in Scheme instead of vectors in Python
+		      (list->vector (map (lambda (n) (uniform-interval {(- pi) / 2} {pi / 2}))
+					 (in-range 10000))))}
+
 
 
 

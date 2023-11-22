@@ -375,4 +375,68 @@ but will it works with all Scheme+ parser?
 (newline)
 
 
+(display "################## XOR ##################")
+(newline)
+
+{r2 <+ (make ReseauRetroPropagation  
+	     #:nbiter 250000
+	     #:ηₛ 10
+	     #:activation_function_hidden_layer σ
+	     #:activation_function_output_layer σ
+	     #:activation_function_hidden_layer_derivative der_σ
+	     #:activation_function_output_layer_derivative der_σ)}
+
+
+{Lexemples2 <+ #( (#(1 0) . #(1))  (#(0 0) . #(0))  (#(0 1) . #(1))  (#(1 1) . #(0)))}  ; use pairs in Scheme instead of vectors in Python
+
+(*init* #(2 3 1) r2)
+
+(apprentissage Lexemples2 r2)
+
+(test Lexemples2 r2)
+
+(newline)
+
+
+
+
+(display "################## SINE ##################")
+(newline)
+
+{r3 <+ (make ReseauRetroPropagation  
+	     #:nbiter 50000
+	     #:ηₛ 0.01
+	     #:activation_function_hidden_layer atan
+	     #:activation_function_output_layer tanh
+	     #:activation_function_hidden_layer_derivative der_atan
+	     #:activation_function_output_layer_derivative der_tanh)}
+
+
+
+
+(declare pi)
+{pi <- 4 * atan(1)}
+
+
+{Llearning <+ (vector-map (lambda (i x) (cons (vector x) (vector (sin x))))  ; use pairs in Scheme instead of vectors in Python
+			  (list->vector (map (lambda (n) (uniform-interval (- pi) pi))
+					(in-range 10000))))}
+
+(display "Llearning=")  (display Llearning) (newline)
+
+(*init* #(1 70 70 1) r3)
+
+
+{Ltest <+ (vector-map (lambda (i x) (cons (vector x) (vector (sin x))))  ; use pairs in Scheme instead of vectors in Python
+		      (list->vector (map (lambda (n) (uniform-interval {(- pi) / 2} {pi / 2}))
+					 (in-range 10000))))}
+
+
+(apprentissage Llearning r3)
+
+(test Ltest r3)
+
+(newline)
+
+
 
