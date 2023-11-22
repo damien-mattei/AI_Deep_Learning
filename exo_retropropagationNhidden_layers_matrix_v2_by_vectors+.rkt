@@ -120,7 +120,7 @@ but will it works with Scheme+ parser?
 
 	 (display "z̃=") (display z̃) (newline)
 
-
+	 ; a definition in class seems like a field
 	 {M <+ (vector-ec (: n {lnc - 1}) ; vectors by eager comprehension (SRFI 42)
 			  create-matrix-vect-by-function(uniform-dummy nc[n + 1] {nc[n] + 1}))} ;; Matrix-vect
 
@@ -296,10 +296,14 @@ but will it works with Scheme+ parser?
 		
 		(for-racket ([i (in-range len_layer_input)]) ; column , parcours les colonnes de la ligne sauf le bias
 		    
-		    {M_i_o[j {i + 1}]  <-  M_i_o[j {i + 1}] - {(- η) * z_input[i] * მzⳆმz̃(z_output[j] z̃_output[j]) * ᐁ_i_o[j]}})
+		    ;{M_i_o[j {i + 1}]  <-  M_i_o[j {i + 1}] - (- η) * z_input[i] * მzⳆმz̃(z_output[j] z̃_output[j]) * ᐁ_i_o[j]})
+		    {M_i_o[j {i + 1}]  <-  M_i_o[j {i + 1}] + η * z_input[i] * მzⳆმz̃(z_output[j] z̃_output[j]) * ᐁ_i_o[j]})
+
 
 		; and update the bias
-            	{M_i_o[j 0]  <-  M_i_o[j 0] - {(- η) * 1.0 * მzⳆმz̃(z_output[j] z̃_output[j]) * ᐁ_i_o[j]}}))
+            	;{M_i_o[j 0]  <-  M_i_o[j 0] - {(- η) * 1.0 * მzⳆმz̃(z_output[j] z̃_output[j]) * ᐁ_i_o[j]}}))
+		{M_i_o[j 0]  <-  M_i_o[j 0] + η * 1.0 * მzⳆმz̃(z_output[j] z̃_output[j]) * ᐁ_i_o[j]}))
+
 	
 
 	(define/public (test Lexemples)

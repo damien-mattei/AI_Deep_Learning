@@ -105,10 +105,10 @@
 
 	  (for-each-in (j (in-range len_layer_output)) ; line
 		(for-each-in (i (in-range len_layer_input)) ; column , parcours les colonnes de la ligne sauf le bias
-		    {M_i_o[j {i + 1}]  <-  M_i_o[j {i + 1}] - {(- η) * z_input[i] * მzⳆმz̃(z_output[j] z̃_output[j]) * ᐁ_i_o[j]}})
+		    {M_i_o[j {i + 1}]  <-  M_i_o[j {i + 1}] - (- η) * z_input[i] * მzⳆმz̃(z_output[j] z̃_output[j]) * ᐁ_i_o[j]})
 
 		; and update the bias
-            	{M_i_o[j 0]  <-  M_i_o[j 0] - {(- η) * 1.0 * მzⳆმz̃(z_output[j] z̃_output[j]) * ᐁ_i_o[j]}}))
+            	{M_i_o[j 0]  <-  M_i_o[j 0] - (- η) * 1.0 * მzⳆმz̃(z_output[j] z̃_output[j]) * ᐁ_i_o[j]}))
 	
 
 
@@ -326,7 +326,7 @@
 	  (for-each-in (entree-sortie_attendue Lexemples)
 		{(entree sortie_attendue) <- entree-sortie_attendue} ; use pairs in Scheme instead of tuples and vectors in Python
 		(accepte_et_propage entree)
-		(display (format #t "~a --> ~a : on attendait ~a~%" entree {z[vector-length(z) - 1]} sortie_attendue))  ; ~% is(newline)
+		(format #t "~a --> ~a : on attendait ~a~%" entree {z[vector-length(z) - 1]} sortie_attendue)  ; ~% is(newline)
 		{ᐁ <- sortie_attendue[0] - z[vector-length(z) - 1][0]} ; erreur sur un element
 		{error <- error + ᐁ ** 2}) ; l'erreur quadratique totale
 		
