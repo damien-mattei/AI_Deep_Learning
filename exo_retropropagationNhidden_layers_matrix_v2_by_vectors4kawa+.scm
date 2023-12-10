@@ -13,10 +13,15 @@
 ;; kawa curly-infix2prefix4kawa.scm ../AI_Deep_Learning/exo_retropropagationNhidden_layers_matrix_v2_by_vectors4kawa+.scm | tr -d '|' > ../AI_Deep_Learning/exo_retropropagationNhidden_layers_matrix_v2_by_vectors4kawa.scm
 
 ; kawa -Dkawa.import.path=".:/Users/mattei/Scheme-PLUS-for-Kawa:./kawa"
- 
-
 
 ;; use: (load "exo_retropropagationNhidden_layers_matrix_v2_by_vectors4kawa.scm")
+
+
+; kawa curly-infix2prefix4kawa.scm --infix-optimize --infix-optimize-slice ../AI_Deep_Learning/exo_retropropagationNhidden_layers_matrix_v2_by_vectors4kawa+.scm | tr -d '|' > ../AI_Deep_Learning/exo_retropropagationNhidden_layers_matrix_v2_by_vectors4kawa-optim-infix-slice.scm
+; kawa -Dkawa.import.path=".:/Users/mattei/Scheme-PLUS-for-Kawa:./kawa"
+
+;(load "exo_retropropagationNhidden_layers_matrix_v2_by_vectors4kawa-optim-infix-slice.scm")
+
 
 
 (require 'srfi-69) ; hash table
@@ -76,7 +81,7 @@
 
 ; return a random number between [inf, sup]
 (define (uniform-interval inf sup)
-  {gap <+ {sup - inf}}
+  {gap <+ sup - inf}
   {inf + gap * (random)})
 
 
@@ -101,7 +106,7 @@
 	  ; the length of output and input layer with coeff. used for bias update
 	  {(len_layer_output len_layer_input_plus1forBias) <+ (dim-matrix M_i_o)} ; use values and define-values to create bindings
         
-	  {len_layer_input <+ {len_layer_input_plus1forBias - 1}}
+	  {len_layer_input <+ len_layer_input_plus1forBias - 1}
 
 	  (for-each-in (j (in-range len_layer_output)) ; line
 		(for-each-in (i (in-range len_layer_input)) ; column , parcours les colonnes de la ligne sauf le bias
