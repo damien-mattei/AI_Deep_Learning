@@ -49,12 +49,13 @@
 
 ; return a random number between [inf, sup]
 (define (uniform-interval inf sup)
-  {gap <+ {sup - inf}}
+  {gap <+ sup - inf}
   {inf + gap * (random)})
 
 
 ; sigmoïde
 (define (σ z̃) 
+  ;(display "σ : z̃ =") (display z̃) (newline)
   {1 / {1 + (exp (- z̃))}})
 
 ; some derivatives
@@ -172,11 +173,14 @@ but will it works with Scheme+ parser?
 		    
 		     {z_1 <- #(1) + z[i]} ; + operator has been overloaded to append scheme vectors
 
-		     ;;(display "z_1 = ") (display z_1) (newline)
+		     ;(display "z_1 = ") (display z_1) (newline)
+		     ;(display "M[i] = ") (display {M[i]}) (newline)
+		     ;(display "(matrix-vect-v M[i]) = ") (display (matrix-vect-v {M[i]})) (newline)
 
+		    
 		     {z̃[i + 1] <- M[i] * z_1} ; z̃ = matrix * vector , return a vector
 
-		     ;(display "z̃[i + 1] = ") (display {z̃[i + 1]}) (newline)
+		     ; (display "z̃[i + 1] = ") (display {z̃[i + 1]}) (newline)
 
 		     #| calcul des réponses des neurones cachés
 		     
@@ -225,8 +229,8 @@ but will it works with Scheme+ parser?
 	  (declare x y)
 	  (for-racket ([it (in-range nbiter)]) ; le nombre d'itérations est fixé !
 
-		      (when {it % 1000 = 0}
-			(display "it=") (display it)(newline))
+		      ;(when {it % 1000 = 0}
+			;(display "it=") (display it)(newline))
 
 		      ;(display it)(newline)
 		      
@@ -239,7 +243,7 @@ but will it works with Scheme+ parser?
 
 		      ; RETRO_PROPAGATION VERS L'ARRIERE, EN DEUX TEMPS
 
-		      {i <+ i_output_layer <+ {vector-length(z) - 1}} ; start at index i of the ouput layer
+		      {i <+ i_output_layer <+ vector-length(z) - 1} ; start at index i of the ouput layer
 
 		      {ns <+ vector-length(z[i])}
 		     
@@ -290,7 +294,7 @@ but will it works with Scheme+ parser?
 	  ; the length of output and input layer with coeff. used for bias update
 	  {(len_layer_output len_layer_input_plus1forBias) <+ (dim-matrix-vect M_i_o)} ; use values and define-values to create bindings
         
-	  {len_layer_input <+ {len_layer_input_plus1forBias - 1}}
+	  {len_layer_input <+ len_layer_input_plus1forBias - 1}
 
 	  (for-racket ([j (in-range len_layer_output)]) ; line
 		
@@ -317,10 +321,10 @@ but will it works with Scheme+ parser?
 		(accepte_et_propage entree)
 		(printf "~a --> ~a : on attendait ~a" entree {z[vector-length(z) - 1]} sortie_attendue) (newline)
 		{ᐁ <- sortie_attendue[0] - z[vector-length(z) - 1][0]} ; erreur sur un element
-		{error <- error + ᐁ ** 2})                             ; l'erreur quadratique totale
+		{err <- err + ᐁ ** 2})                             ; l'erreur quadratique totale
 		
 	  {err <- err * 0.5}
-	  (display "Error on examples=") (display error) (newline))
+	  (display "Error on examples=") (display err) (newline))
 
 
 
@@ -372,7 +376,7 @@ but will it works with Scheme+ parser?
 
 
 
-(printf "################## SINUS ##################")
+(printf "################## SINUS - SINE ##################")
 (newline)
 
 {r3 <+ (new ReseauRetroPropagation (nc #(1 70 70 1))

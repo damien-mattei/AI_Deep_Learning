@@ -2,7 +2,7 @@
 
 ;; Kawa version
 
-;; kawa curly-infix2prefix4kawa.scm ../AI_Deep_Learning/kawa/matrix_classes+.scm | tr -d '|' > ../AI_Deep_Learning/kawa/matrix_classes.scm
+;; kawa curly-infix2prefix4kawa.scm   --infix-optimize --infix-optimize-slice ../AI_Deep_Learning/kawa/matrix_classes+.scm | tr -d '|' > ../AI_Deep_Learning/kawa/matrix_classes.scm
 
 ;; kawa -d classes -Dkawa.import.path=".:/Users/mattei/Scheme-PLUS-for-Kawa:./kawa" -C kawa/matrix_classes.scm
 
@@ -107,10 +107,10 @@
   (define (res i j)
     {sum <+ 0}
     (for ({k <+ 0} {k < p1} {k <- k + 1})
-	 {sum <- sum + v1[i][k] * v2[k][j]}))
+	 {sum <- sum + v1[i][k] * v2[k][j]})
 	 ;;{sum <- {sum + {v1[i][k] * v2[k][j]}}})
     ;(display "sum=")(display sum) (newline)
-    ;sum)
+    sum)
 	
   {v <+ (create-vector-2d res n1 p2)}
   

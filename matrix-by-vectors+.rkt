@@ -4,6 +4,9 @@
 
 ;; Author: Damien Mattei
 
+;; use: (require "matrix-by-vectors+.rkt")
+
+
 (provide matrix-vect
 	 matrix-vect?
 	 matrix-vect-v
@@ -61,7 +64,8 @@
   (define (res i j)
     {sum <+ 0}
     (for ({k <+ 0} {k < p1} {k <- k + 1})
-    	 {sum <- sum + v1[i][k] * v2[k][j]}))
+    	 {sum <- sum + v1[i][k] * v2[k][j]})
+    sum)
     ;; (for/sum ([k (in-range p1)])
     ;; 	     {v1[i][k] * v2[k][j]}))
 
@@ -80,12 +84,15 @@
 
 (define (matrix-column->vector Mc)
   {v <+ (matrix-vect-v Mc)}
+  ;;(display "matrix-by-vectors : matrix-column->vector : v =") (display v) (newline)
   (vector-map-srfi-43 (lambda (i v2) {v2[0]})
 		      v))
 
 (define (multiply-matrix-vector M v) ;; args: matrix ,vector ;  return vector
   {Mc <+ (vector->matrix-column v)}
-  ;(display Mc)
+  ;;(display "matrix-by-vectors : multiply-matrix-vector : v=") (display v) (newline)
+  ;;(display Mc) (newline)
+  ;;(display (matrix-vect-v Mc)) (newline)
   ;;(matrix-column->vector (multiply-matrix-matrix M Mc)))
   (matrix-column->vector {M * Mc}))
 ;;(matrix-column->vector (* M Mc)))

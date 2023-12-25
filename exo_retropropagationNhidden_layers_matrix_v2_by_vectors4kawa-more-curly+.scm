@@ -82,7 +82,7 @@
 
 ; return a random number between [inf, sup]
 (define (uniform-interval inf sup)
-  {gap <+ sup - inf}
+  {gap <+ {sup - inf}}
   {inf + gap * (random)})
 
 
@@ -107,7 +107,7 @@
 	  ; the length of output and input layer with coeff. used for bias update
 	  {(len_layer_output len_layer_input_plus1forBias) <+ (dim-matrix M_i_o)} ; use values and define-values to create bindings
         
-	  {len_layer_input <+ len_layer_input_plus1forBias - 1}
+	  {len_layer_input <+ {len_layer_input_plus1forBias - 1}}
 
 	  (for-each-in (j (in-range len_layer_output)) ; line
 		(for-each-in (i (in-range len_layer_input)) ; column , parcours les colonnes de la ligne sauf le bias
@@ -274,7 +274,7 @@
 
 		 ;; RETRO_PROPAGATION VERS L'ARRIERE, EN DEUX TEMPS
 
-		 {i <+ i_output_layer <+ vector-length(z) - 1} ; start at index i of the ouput layer
+		 {i <+ i_output_layer <+ {vector-length(z) - 1}} ; start at index i of the ouput layer
 
 		 {ns <+ vector-length(z[i])}
 		 
