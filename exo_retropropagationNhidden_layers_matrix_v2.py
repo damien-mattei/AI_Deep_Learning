@@ -305,10 +305,17 @@ class ReseauRetroPropagation():
         (len_layer_output, len_layer_input_plus1forBias) = M_i_o.dim()
         
         len_layer_input = len_layer_input_plus1forBias - 1
+
+        #print("modification_des_poids : len_layer_input = ", len_layer_input)
+        #print("modification_des_poids : len_layer_output = ", len_layer_output)
        
         for j in range(len_layer_output):  # line
             
+            #print("modification_des_poids : j = ", j)
+
             for i in range(len_layer_input): # column , parcours les colonnes de la ligne sauf le bias
+
+                #print("modification_des_poids : i = ", i)
 
                 M_i_o[j][i+1] -= -η * z_input[i] * მzⳆმz̃(z_output[j],z̃_output[j]) * ᐁ_i_o[j]
 
@@ -352,10 +359,11 @@ if __name__ == '__main__':
     print()
     print("Error=") ; print(r1.error)
     
+    #for i in range(100):
     print('################## XOR ##################')
     # 2 entrées (+ bias), 1 neurone en sortie
-    r2 = ReseauRetroPropagation([2,3,1],250000,10,σ,σ,der_σ,der_σ)
-    #r2 = ReseauRetroPropagation([2,3,1],50000,1,0.001,σ,σ,der_σ,der_σ)
+        #r2 = ReseauRetroPropagation([2,3,1],250000,10,σ,σ,der_σ,der_σ)
+    r2 = ReseauRetroPropagation([2,8,1],50000,0.1,σ,σ,der_σ,der_σ)
     #r2 = ReseauRetroPropagation([2,8,10,7,1],50000,0.1,0.001,σ,σ,der_σ,der_σ) 
     Lexemples2 = [[[1,0],[1]], [[0,0],[0]], [[0,1],[1]], [[1,1],[0]]]
     START = time() ; r2.apprentissage(Lexemples2) ; END = time()

@@ -81,7 +81,7 @@ but will it works with all Scheme+ parser?
             	{M_i_o[j 0]  <-  M_i_o[j 0] + η * 1.0 * მzⳆმz̃(z_output[j] z̃_output[j]) * ᐁ_i_o[j]}))
 	
 
-(define-class ReseauRetroPropagation ()
+(define-class ReseauRetroPropagation () ; network back propagation
   
   (nbiter #:init-value 3 
 	  #:init-keyword #:nbiter 
@@ -117,7 +117,7 @@ but will it works with all Scheme+ parser?
   (ᐁ #:getter nbp-get-ᐁ  
      #:setter nbp-set-ᐁ!)
 
-  (error #:init-value 0)) ; end class
+  (eror #:init-value 0)) ; end class
 
 
 (define (*init* nc nbp)
@@ -258,12 +258,12 @@ but will it works with all Scheme+ parser?
 
   (declare x y)
   (for-each-in (it (in-range nbiter)) ; le nombre d'itérations est fixé !
-		 (when {it % 1000 = 0}
-		       (display it)(newline))
+		 ;(when {it % 1000 = 0}
+		 ;      (display it)(newline))
 
 		 ;;(display it)(newline)
 		 
-		 {err <+ 0.0} ; l'erreur totale pour cet exemple
+		 ;{err <+ 0.0} ; l'erreur totale pour cet exemple
 
 		 {(x y) <- Lexemples[ip]}         ; un nouvel exemple à apprendre
 
@@ -279,13 +279,13 @@ but will it works with all Scheme+ parser?
 
 		 ;; TEMPS 1. calcul des gradients locaux sur la couche k de sortie (les erreurs commises)
 		 (for-each-in (k (in-range ns))
-				{ᐁ[i][k] <- y[k] - z[i][k]}     ; gradient sur un neurone de sortie (erreur locale)
-				{err <- err + ᐁ[i][k] ** 2})    ; l'erreur quadratique totale
+				{ᐁ[i][k] <- y[k] - z[i][k]}  )   ; gradient sur un neurone de sortie (erreur locale)
+			;	{err <- err + ᐁ[i][k] ** 2})    ; l'erreur quadratique totale
 
-		 {err <- err * 0.5}
+		 ;{err <- err * 0.5}
 
-		 (when {it = nbiter - 1}
-		       {error <- err})               ; mémorisation de l'erreur totale à la dernière itération
+		 ;(when {it = nbiter - 1}
+		  ;     {eror <- err})               ; mémorisation de l'erreur totale à la dernière itération
 
 
 		 ;; modification des poids de la matrice de transition de la derniére couche de neurones cachés à la couche de sortie
@@ -302,11 +302,11 @@ but will it works with all Scheme+ parser?
 				{nc <+ vector-length(z[i])}
 				{ns <+ vector-length(z[i + 1])}
 				(for-each-in (j (in-range nc))
-					       {k <+ 0}
+					       {k <+ 0} ; should be commented ?
 					       {ᐁ[i][j] <- ($+>
 							    {sum <+ 0}  
 							    (for-each-in (k (in-range ns))
-									   {sum <- sum + მzⳆმz̃(z[i + 1][k] z̃[i + 1][k]) * M[i][k {j + 1}] * ᐁ[i + 1][k]})
+								{sum <- sum + მzⳆმz̃(z[i + 1][k] z̃[i + 1][k]) * M[i][k {j + 1}] * ᐁ[i + 1][k]})
 							    sum)})
 				;; modification des poids de la matrice de transition de la couche i-1 à i
 				{modification_des_poids(M[i - 1] ηₛ  z[i - 1] z[i] z̃[i] ᐁ[i] მzⳆმz̃)})
@@ -346,10 +346,10 @@ but will it works with all Scheme+ parser?
 			sortie_attendue)  ; ~% is(newline)
 
 		{ᐁ <- sortie_attendue[0] - z[vector-length(z) - 1][0]} ; erreur sur un element
-		{error <- error + ᐁ ** 2}) ; l'erreur quadratique totale
+		{err <- err + ᐁ ** 2}) ; l'erreur quadratique totale
 		
 	  {err <- err * 0.5}
-	  (display "Error on examples=") (display error) (newline))
+	  (display "Error on examples=") (display err) (newline))
 
 
 
@@ -378,9 +378,11 @@ but will it works with all Scheme+ parser?
 (display "################## XOR ##################")
 (newline)
 
+;(for ({i <+ 0} {i < 100} {i <- i + 1})
+
 {r2 <+ (make ReseauRetroPropagation  
 	     #:nbiter 250000
-	     #:ηₛ 10
+	     #:ηₛ 0.1
 	     #:activation_function_hidden_layer σ
 	     #:activation_function_output_layer σ
 	     #:activation_function_hidden_layer_derivative der_σ
@@ -389,18 +391,18 @@ but will it works with all Scheme+ parser?
 
 {Lexemples2 <+ #( (#(1 0) . #(1))  (#(0 0) . #(0))  (#(0 1) . #(1))  (#(1 1) . #(0)))}  ; use pairs in Scheme instead of vectors in Python
 
-(*init* #(2 3 1) r2)
+(*init* #(2 8 1) r2)
 
 (apprentissage Lexemples2 r2)
 
 (test Lexemples2 r2)
 
 (newline)
+;)
 
 
 
-
-(display "################## SINE ##################")
+;(display "################## SINE ##################")
 (newline)
 
 {r3 <+ (make ReseauRetroPropagation  

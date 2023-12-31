@@ -82,7 +82,7 @@ but will it works with Scheme+ parser?
 ; (send net accepte_et_propage #(1.7)) ; should no more works,define/public versus define
 ; #(-0.4839735172378113 -0.40037108475276867 -0.34185694789193694)
 
-(define ReseauRetroPropagation
+(define ReseauRetroPropagation ; network back propagation
 
   (class object%
 
@@ -139,7 +139,7 @@ but will it works with Scheme+ parser?
 
 	 (display "nbiter=") (display nbiter) (newline)
 
-	 (field (error 0))
+	 (field (eror 0))
 
 
 	 ; forward propagation
@@ -234,7 +234,7 @@ but will it works with Scheme+ parser?
 
 		      ;(display it)(newline)
 		      
-		      {err <+ 0.0} ; l'erreur totale pour cet exemple
+		      ;{err <+ 0.0} ; l'erreur totale pour cet exemple
 
 		      {(x y) <- Lexemples[ip]}         ; un nouvel exemple à apprendre
 
@@ -250,13 +250,13 @@ but will it works with Scheme+ parser?
 
 		      ;; TEMPS 1. calcul des gradients locaux sur la couche k de sortie (les erreurs commises)
 		      (for-racket ([k (in-range ns)])
-				  {ᐁ[i][k] <- y[k] - z[i][k]}     ; gradient sur un neurone de sortie (erreur locale)
-				  {err <- err + ᐁ[i][k] ** 2})    ; l'erreur quadratique totale
+				  {ᐁ[i][k] <- y[k] - z[i][k]})     ; gradient sur un neurone de sortie (erreur locale)
+				  ;{err <- err + ᐁ[i][k] ** 2})    ; l'erreur quadratique totale
 
-		      {err <- err * 0.5}
+		      ;{err <- err * 0.5}
 
-		      (when {it = nbiter - 1}
-			{error <- err})               ; mémorisation de l'erreur totale à la dernière itération
+		      ;(when {it = nbiter - 1}
+			;{eror <- err})               ; mémorisation de l'erreur totale à la dernière itération
 
 
 		      ;; modification des poids de la matrice de transition de la derniére couche de neurones cachés à la couche de sortie
@@ -273,7 +273,6 @@ but will it works with Scheme+ parser?
 				{nc <+ vector-length(z[i])}
 				{ns <+ vector-length(z[i + 1])}
 				(for-racket ([j (in-range nc)])
-					{k <+ 0}
 					{ᐁ[i][j] <- (for/sum ([k (in-range ns)])
 							{მzⳆმz̃(z[i + 1][k] z̃[i + 1][k]) * M[i][k {j + 1}] * ᐁ[i + 1][k]})})
 				; modification des poids de la matrice de transition de la couche i-1 à i
@@ -296,10 +295,16 @@ but will it works with Scheme+ parser?
         
 	  {len_layer_input <+ len_layer_input_plus1forBias - 1}
 
+	  ;(display "modification_des_poids : len_layer_input = ") (display len_layer_input) (newline)
+	  ;(display "modification_des_poids : len_layer_output = ") (display len_layer_output) (newline)
+
 	  (for-racket ([j (in-range len_layer_output)]) ; line
 		
+		;(display "modification_des_poids : j = ") (display j) (newline)
+
 		(for-racket ([i (in-range len_layer_input)]) ; column , parcours les colonnes de la ligne sauf le bias
 		    
+		    ;(display "modification_des_poids : i = ") (display i) (newline)
 		    ;{M_i_o[j {i + 1}]  <-  M_i_o[j {i + 1}] - (- η) * z_input[i] * მzⳆმz̃(z_output[j] z̃_output[j]) * ᐁ_i_o[j]})
 		    {M_i_o[j {i + 1}]  <-  M_i_o[j {i + 1}] + η * z_input[i] * მzⳆმz̃(z_output[j] z̃_output[j]) * ᐁ_i_o[j]})
 
@@ -307,7 +312,7 @@ but will it works with Scheme+ parser?
 		; and update the bias
             	;{M_i_o[j 0]  <-  M_i_o[j 0] - {(- η) * 1.0 * მzⳆმz̃(z_output[j] z̃_output[j]) * ᐁ_i_o[j]}}))
 		{M_i_o[j 0]  <-  M_i_o[j 0] + η * 1.0 * მzⳆმz̃(z_output[j] z̃_output[j]) * ᐁ_i_o[j]}))
-
+	
 	
 
 	(define/public (test Lexemples)
@@ -355,13 +360,14 @@ but will it works with Scheme+ parser?
 
 (newline)
 
+;(for ({i <+ 0} {i < 100} {i <- i + 1})
 
 (printf "################## XOR ##################")
 (newline)
 
-{r2 <+ (new ReseauRetroPropagation (nc #(2 3 1))
+{r2 <+ (new ReseauRetroPropagation (nc #(2 8 1))
 				   (nbiter 250000)
-				   (ηₛ 10)
+				   (ηₛ 0.1)
 				   (activation_function_hidden_layer σ)
 				   (activation_function_output_layer σ)
 				   (activation_function_hidden_layer_derivative der_σ)
@@ -373,7 +379,7 @@ but will it works with Scheme+ parser?
 
 (send r2 test Lexemples2)
 
-
+;) ; end 'for'
 
 
 (printf "################## SINUS - SINE ##################")

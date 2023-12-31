@@ -121,7 +121,7 @@
 
 ;; (define net (ReseauRetroPropagation #(2 3 1) 250000 10 σ σ der_σ der_σ))
 
-(define-simple-class ReseauRetroPropagation ()
+(define-simple-class ReseauRetroPropagation ()  ; network back propagation
   
   (nbiter init-value: 3)
   (activation_function_hidden_layer)
@@ -138,7 +138,7 @@
 
   (ᐁ)
 
-  (error 0)
+  (eror 0)
 
   ((*init* nc nbiter0 ηₛ0 activation_function_hidden_layer0
 	   	          activation_function_output_layer0
@@ -265,7 +265,7 @@
 
 		 ;;(display it)(newline)
 		 
-		 {err <+ 0.0} ; l'erreur totale pour cet exemple
+		 ;{err <+ 0.0} ; l'erreur totale pour cet exemple
 
 		 {(x y) <- Lexemples[ip]}         ; un nouvel exemple à apprendre
 
@@ -281,13 +281,13 @@
 
 		 ;; TEMPS 1. calcul des gradients locaux sur la couche k de sortie (les erreurs commises)
 		 (for-each-in (k (in-range ns))
-				{ᐁ[i][k] <- y[k] - z[i][k]}     ; gradient sur un neurone de sortie (erreur locale)
+				{ᐁ[i][k] <- y[k] - z[i][k]})     ; gradient sur un neurone de sortie (erreur locale)
 				{err <- err + ᐁ[i][k] ** 2})    ; l'erreur quadratique totale
 
-		 {err <- err * 0.5}
+		 ;{err <- err * 0.5}
 
-		 (when {it = nbiter - 1}
-		       {error <- err})               ; mémorisation de l'erreur totale à la dernière itération
+		 ;(when {it = nbiter - 1}
+		 ;      {eror <- err})               ; mémorisation de l'erreur totale à la dernière itération
 
 
 		 ;; modification des poids de la matrice de transition de la derniére couche de neurones cachés à la couche de sortie
@@ -304,12 +304,11 @@
 				{nc <+ vector-length(z[i])}
 				{ns <+ vector-length(z[i + 1])}
 				(for-each-in (j (in-range nc))
-					       {k <+ 0}
-					       {ᐁ[i][j] <- ($+>
-							    {sum <+ 0}  
-							    (for-each-in (k (in-range ns))
-									   {sum <- sum + მzⳆმz̃(z[i + 1][k] z̃[i + 1][k]) * M[i][k {j + 1}] * ᐁ[i + 1][k]})
-							    sum)})
+					{ᐁ[i][j] <- ($+>
+							{sum <+ 0}  
+							(for-each-in (k (in-range ns))
+							     {sum <- sum + მzⳆმz̃(z[i + 1][k] z̃[i + 1][k]) * M[i][k {j + 1}] * ᐁ[i + 1][k]})
+							sum)})
 				;; modification des poids de la matrice de transition de la couche i-1 à i
 				{modification_des_poids(M[i - 1] ηₛ  z[i - 1] z[i] z̃[i] ᐁ[i] მzⳆმz̃)})
 
@@ -398,7 +397,7 @@
 (display "################## XOR ##################")
 (newline)
 
-{r2 <+ (ReseauRetroPropagation  #(2 3 1) 250000 10 σ σ der_σ der_σ)}
+{r2 <+ (ReseauRetroPropagation  #(2 8 1) 250000 0.1 σ σ der_σ der_σ)}
 
 {Lexemples2 <+ #( (#(1 0) . #(1))  (#(0 0) . #(0))  (#(0 1) . #(1))  (#(1 1) . #(0)))}  ; use pairs in Scheme instead of vectors in Python
 
@@ -423,7 +422,7 @@
 			  (list->vector (map (lambda (n) (uniform-interval (- pi) pi))
 					(in-range 10000))))}
 
-(display "Llearning=")  (display Llearning) (newline)
+;(display "Llearning=")  (display Llearning) (newline)
 
 {Ltest <+ (vector-map (lambda (x) (cons (vector x) (vector (sin x))))  ; use pairs in Scheme instead of vectors in Python
 		      (list->vector (map (lambda (n) (uniform-interval {(- pi) / 2} {pi / 2}))
