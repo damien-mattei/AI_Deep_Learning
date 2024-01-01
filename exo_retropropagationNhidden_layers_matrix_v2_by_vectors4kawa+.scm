@@ -282,7 +282,7 @@
 		 ;; TEMPS 1. calcul des gradients locaux sur la couche k de sortie (les erreurs commises)
 		 (for-each-in (k (in-range ns))
 				{ᐁ[i][k] <- y[k] - z[i][k]})     ; gradient sur un neurone de sortie (erreur locale)
-				{err <- err + ᐁ[i][k] ** 2})    ; l'erreur quadratique totale
+				;{err <- err + ᐁ[i][k] ** 2})    ; l'erreur quadratique totale
 
 		 ;{err <- err * 0.5}
 
