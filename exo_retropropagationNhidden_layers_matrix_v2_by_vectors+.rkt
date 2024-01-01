@@ -274,7 +274,7 @@ but will it works with Scheme+ parser?
 				{ns <+ vector-length(z[i + 1])}
 				(for-racket ([j (in-range nc)])
 					{ᐁ[i][j] <- (for/sum ([k (in-range ns)])
-							{მzⳆმz̃(z[i + 1][k] z̃[i + 1][k]) * M[i][k {j + 1}] * ᐁ[i + 1][k]})})
+							მzⳆმz̃(z[i + 1][k] z̃[i + 1][k]) * M[i][k {j + 1}] * ᐁ[i + 1][k])})
 				; modification des poids de la matrice de transition de la couche i-1 à i
          			{modification_des_poids(M[i - 1] ηₛ  z[i - 1] z[i] z̃[i] ᐁ[i] მzⳆმz̃)})
 
