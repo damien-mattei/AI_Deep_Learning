@@ -397,7 +397,7 @@
 (display "################## XOR ##################")
 (newline)
 
-{r2 <+ (ReseauRetroPropagation  #(2 8 1) 250000 0.1 σ σ der_σ der_σ)}
+{r2 <+ (ReseauRetroPropagation  #(2 8 1) 250000 0.1 σ σ der_σ der_σ)} ; 3' 22"
 
 {Lexemples2 <+ #( (#(1 0) . #(1))  (#(0 0) . #(0))  (#(0 1) . #(1))  (#(1 1) . #(0)))}  ; use pairs in Scheme instead of vectors in Python
 

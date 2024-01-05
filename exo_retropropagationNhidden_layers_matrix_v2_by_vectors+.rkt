@@ -229,8 +229,8 @@ but will it works with Scheme+ parser?
 	  (declare x y)
 	  (for-racket ([it (in-range nbiter)]) ; le nombre d'itérations est fixé !
 
-		      ;(when {it % 1000 = 0}
-			;(display "it=") (display it)(newline))
+		      (when {it % 1000 = 0}
+			(display "it=") (display it)(newline))
 
 		      ;(display it)(newline)
 		      
@@ -365,7 +365,7 @@ but will it works with Scheme+ parser?
 (printf "################## XOR ##################")
 (newline)
 
-{r2 <+ (new ReseauRetroPropagation (nc #(2 8 1))
+{r2 <+ (new ReseauRetroPropagation (nc #(2 8 1)) ; 20"
 				   (nbiter 250000)
 				   (ηₛ 0.1)
 				   (activation_function_hidden_layer σ)

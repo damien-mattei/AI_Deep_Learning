@@ -10,7 +10,9 @@
 ; use MacVim to show ALL the characters of this file (not Emacs, not Aquamacs)
 ; jeu de couleurs: Torte ou Koehler
 
-; use: (load "exo_retropropagationNhidden_layers_matrix_v2_by_vectors4guile+.scm")
+;./curly-infix2prefix4guile.scm    --infix-optimize --infix-optimize-slice ../AI_Deep_Learning/exo_retropropagationNhidden_layers_matrix_v2_by_vectors4guile+.scm > ../AI_Deep_Learning/exo_retropropagationNhidden_layers_matrix_v2_by_vectors4guile-optim-infix-slice.scm
+
+; use: (load "exo_retropropagationNhidden_layers_matrix_v2_by_vectors4guile-optim-infix-slice.scm")
 
 
 (use-modules (Scheme+)
@@ -80,6 +82,9 @@ but will it works with all Scheme+ parser?
 		; and update the bias
             	{M_i_o[j 0]  <-  M_i_o[j 0] + η * 1.0 * მzⳆმz̃(z_output[j] z̃_output[j]) * ᐁ_i_o[j]}))
 	
+
+
+
 
 (define-class ReseauRetroPropagation () ; network back propagation
   
@@ -190,7 +195,7 @@ but will it works with all Scheme+ parser?
 
   (declare i) ; because the variable will be used outside the 'for' loop too
 
-  (for ({i <- 0} {i < n - 2} {i <- i + 1}) ; personnal 'for' definition as in Javascript,C,C++,Java
+  (for ({i <- 0} {i < n - 2} {i <- i + 1}) ; private 'for' definition as in Javascript,C,C++,Java
 
        ;; calcul des stimuli reçus par la couche cachée d'indice i+1 à-partir de la précedente
 
@@ -198,11 +203,13 @@ but will it works with all Scheme+ parser?
        
        {z_1 <- #(1) + z[i]} ; + operator has been overloaded to append scheme vectors
 
-       ;;(display "z_1 = ") (display z_1) (newline)
+       ;(display "z_1 = ") (display z_1) (newline)
+
+       ;(display "M=") (display M) (newline)
 
        {z̃[i + 1] <- M[i] * z_1} ; z̃ = matrix * vector , return a vector
 
-       ;;(display "z̃[i + 1] = ") (display {z̃[i + 1]}) (newline)
+       ;(display "z̃[i + 1] = ") (display {z̃[i + 1]}) (newline)
 
        #| calcul des réponses des neurones cachés
        
@@ -258,8 +265,8 @@ but will it works with all Scheme+ parser?
 
   (declare x y)
   (for-each-in (it (in-range nbiter)) ; le nombre d'itérations est fixé !
-		 ;(when {it % 1000 = 0}
-		 ;      (display it)(newline))
+		 (when {it % 1000 = 0}
+		       (display it)(newline))
 
 		 ;;(display it)(newline)
 		 
@@ -272,7 +279,7 @@ but will it works with all Scheme+ parser?
 
 		 ;; RETRO_PROPAGATION VERS L'ARRIERE, EN DEUX TEMPS
 
-		 {i <+ i_output_layer <+ {vector-length(z) - 1}} ; start at index i of the ouput layer
+		 {i <+ i_output_layer <+ vector-length(z) - 1} ; start at index i of the ouput layer
 
 		 {ns <+ vector-length(z[i])}
 		 
@@ -391,7 +398,7 @@ but will it works with all Scheme+ parser?
 
 {Lexemples2 <+ #( (#(1 0) . #(1))  (#(0 0) . #(0))  (#(0 1) . #(1))  (#(1 1) . #(0)))}  ; use pairs in Scheme instead of vectors in Python
 
-(*init* #(2 8 1) r2)
+(*init* #(2 8 1) r2) ; 1' 40"
 
 (apprentissage Lexemples2 r2)
 
@@ -402,7 +409,7 @@ but will it works with all Scheme+ parser?
 
 
 
-;(display "################## SINE ##################")
+(display "################## SINE ##################")
 (newline)
 
 {r3 <+ (make ReseauRetroPropagation  
@@ -424,7 +431,7 @@ but will it works with all Scheme+ parser?
 			  (list->vector (map (lambda (n) (uniform-interval (- pi) pi))
 					(in-range 10000))))}
 
-(display "Llearning=")  (display Llearning) (newline)
+;(display "Llearning=")  (display Llearning) (newline)
 
 (*init* #(1 70 70 1) r3)
 

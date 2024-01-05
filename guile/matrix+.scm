@@ -3,6 +3,12 @@
 
 ;; sudo cp matrix+.scm /usr/local/share/guile/site/3.0
 
+; ./curly-infix2prefix4guile.scm  --infix-optimize --infix-optimize-slice ../AI_Deep_Learning/guile/matrix+.scm > ../AI_Deep_Learning/guile/matrix.scm
+
+;; (use-modules (matrix+))
+
+
+
 (define-module (matrix+)
 
   #:use-module (Scheme+)
@@ -95,7 +101,8 @@
   (define (res i j)
     {sum <+ 0}
     (for ({k <+ 0} {k < p1} {k <- k + 1})
-	 {sum <- sum + v1[i][k] * v2[k][j]}))
+	 {sum <- sum + v1[i][k] * v2[k][j]})
+    sum)
 
   {v <+ (create-vector-2d res n1 p2)}
   ;(display "v=") (display v) (newline)
