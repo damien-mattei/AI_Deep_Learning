@@ -23,10 +23,10 @@
 
 ;; this file must now be included in your main project file like this:
 ;; at the beginning of your main file add
-;; for infix operator precedence:
-(define-namespace-anchor ankh)
-(define bsns (namespace-anchor->namespace ankh))
-(current-namespace bsns)
+;; for infix operator precedence WITHOUT optimizations those definitions are MANDATORY:
+;(define-namespace-anchor ankh)
+;(define bsns (namespace-anchor->namespace ankh))
+;(current-namespace bsns)
 
 (require srfi/42) ; Eager Comprehensions
 
