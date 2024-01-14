@@ -101,8 +101,7 @@
     {sum <+ 0}
     (for ({k <+ 0} {k < p1} {k <- k + 1})
 	 {sum <- sum + v1[i][k] * v2[k][j]})
-	 ;;{sum <- {sum + {v1[i][k] * v2[k][j]}}})
-    ;(display "sum=")(display sum) (newline)
+	 ;(display "sum=")(display sum) (newline)
     sum)
 
 	

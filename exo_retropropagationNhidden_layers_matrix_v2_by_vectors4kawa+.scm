@@ -10,18 +10,12 @@
 ; use MacVim to show ALL the characters of this file (not Emacs, not Aquamacs)
 ; jeu de couleurs: Torte ou Koehler
 
-;; kawa curly-infix2prefix4kawa.scm ../AI_Deep_Learning/exo_retropropagationNhidden_layers_matrix_v2_by_vectors4kawa+.scm | tr -d '|' > ../AI_Deep_Learning/exo_retropropagationNhidden_layers_matrix_v2_by_vectors4kawa.scm
+
+; kawa curly-infix2prefix4kawa.scm --infix-optimize --infix-optimize-slice ../AI_Deep_Learning/exo_retropropagationNhidden_layers_matrix_v2_by_vectors4kawa+.scm | tr -d '|' > ../AI_Deep_Learning/exo_retropropagationNhidden_layers_matrix_v2_by_vectors4kawa.scm
 
 ; kawa -Dkawa.import.path=".:/Users/mattei/Scheme-PLUS-for-Kawa:./kawa"
 
-;; use: (load "exo_retropropagationNhidden_layers_matrix_v2_by_vectors4kawa.scm")
-
-
-; kawa curly-infix2prefix4kawa.scm --infix-optimize --infix-optimize-slice ../AI_Deep_Learning/exo_retropropagationNhidden_layers_matrix_v2_by_vectors4kawa+.scm | tr -d '|' > ../AI_Deep_Learning/exo_retropropagationNhidden_layers_matrix_v2_by_vectors4kawa-optim-infix-slice.scm
-
-; kawa -Dkawa.import.path=".:/Users/mattei/Scheme-PLUS-for-Kawa:./kawa"
-
-; (load "exo_retropropagationNhidden_layers_matrix_v2_by_vectors4kawa-optim-infix-slice.scm")
+; (load "exo_retropropagationNhidden_layers_matrix_v2_by_vectors4kawa.scm")
 
 
 
