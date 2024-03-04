@@ -10,14 +10,29 @@
 ; use MacVim to show ALL the characters of this file (not Emacs, not Aquamacs)
 ; jeu de couleurs: Torte ou Koehler
 
-;./curly-infix2prefix4guile.scm    --infix-optimize --infix-optimize-slice ../AI_Deep_Learning/exo_retropropagationNhidden_layers_matrix_v2_by_vectors4guile+.scm > ../AI_Deep_Learning/exo_retropropagationNhidden_layers_matrix_v2_by_vectors4guile-optim-infix-slice.scm
+;./curly-infix2prefix4guile.scm    ../AI_Deep_Learning/exo_retropropagationNhidden_layers_matrix_v2_by_vectors4guile+.scm > ../AI_Deep_Learning/exo_retropropagationNhidden_layers_matrix_v2_by_vectors4guile.scm
 
-; use: (load "exo_retropropagationNhidden_layers_matrix_v2_by_vectors4guile-optim-infix-slice.scm")
+; use: (load "exo_retropropagationNhidden_layers_matrix_v2_by_vectors4guile.scm")
+
+; in case of problem: rm -rf .cache/guile/
+
+#|  note: this file can run in two ways:
+          - directly loaded in Guile
+	  - parsed and loaded
+|#
 
 
 (use-modules (Scheme+)
 	     (matrix+)
-	     (srfi srfi-42) ; Eager Comprehensions
+	     ;(srfi srfi-42) ; import all definitions
+             ((srfi srfi-42) 
+		#:renamer (lambda (sym) ; this avoid conflict with scheme+ slicing symbol
+                              (if (eq? sym ':)
+                                  's42-:
+                                  sym)))
+		;#:select ((: . s42-:))) ; rename only one
+	     ;;((srfi srfi-42) ; Eager Comprehensions
+	;;	#:prefix s42-)
 	     (oop goops)
 	     (srfi srfi-43)) ; vectors
 
@@ -143,7 +158,7 @@ but will it works with all Scheme+ parser?
 		 {z̃ <- (vector-map make-vector-zero nc)}
                  (display "z̃=") (display z̃) (newline)
 
-		 {M <- (vector-ec (: n {lnc - 1}) ; vectors by eager comprehension (SRFI 42)
+		 {M <- (vector-ec (s42-: n {lnc - 1}) ; vectors by eager comprehension (SRFI 42)
 			  create-matrix-by-function(uniform-dummy nc[n + 1] {nc[n] + 1}))} ;; Matrix-vect
 
 		 (display "M=") (display M) (newline)
@@ -398,7 +413,7 @@ but will it works with all Scheme+ parser?
 
 {Lexemples2 <+ #( (#(1 0) . #(1))  (#(0 0) . #(0))  (#(0 1) . #(1))  (#(1 1) . #(0)))}  ; use pairs in Scheme instead of vectors in Python
 
-(*init* #(2 8 1) r2) ; 1' 40"
+(*init* #(2 8 1) r2) ; 1' 40" - 2' 25"
 
 (apprentissage Lexemples2 r2)
 

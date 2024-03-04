@@ -1,4 +1,4 @@
-#lang reader "../Scheme-PLUS-for-Racket/main/Scheme-PLUS-for-Racket/SRFI/SRFI-105.rkt" ; SRFI-105 Curly-infix-expressions
+#lang reader "../Scheme-PLUS-for-Racket/main/Scheme-PLUS-for-Racket/src/SRFI-105.rkt" ; SRFI-105 Curly-infix-expressions
 
 ;; Matrix  based on vector of vectors
 

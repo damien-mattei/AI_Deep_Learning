@@ -3,7 +3,7 @@
 
 ;; sudo cp matrix+.scm /usr/local/share/guile/site/3.0
 
-; ./curly-infix2prefix4guile.scm  --infix-optimize --infix-optimize-slice ../AI_Deep_Learning/guile/matrix+.scm > ../AI_Deep_Learning/guile/matrix.scm
+; ./curly-infix2prefix4guile.scm   ../AI_Deep_Learning/guile/matrix+.scm > ../AI_Deep_Learning/guile/matrix.scm
 
 ;; (use-modules (matrix+))
 

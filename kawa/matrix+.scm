@@ -3,7 +3,9 @@
 ;; Kawa version
 
 
-; kawa curly-infix2prefix4kawa.scm  --infix-optimize --infix-optimize-slice ../AI_Deep_Learning/kawa/matrix+.scm | tr -d '|'  > ../AI_Deep_Learning/kawa/matrix.scm
+; kawa curly-infix2prefix4kawa.scm  ../AI_Deep_Learning/kawa/matrix+.scm | tr -d '|'  > ../AI_Deep_Learning/kawa/matrix.scm
+
+; kawa -Dkawa.import.path=".:/Users/mattei/Scheme-PLUS-for-Kawa:./kawa"
 
 ;; use with Scheme+: (require matrix)
 
