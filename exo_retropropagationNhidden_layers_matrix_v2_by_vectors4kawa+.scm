@@ -11,7 +11,7 @@
 ; jeu de couleurs: Torte ou Koehler
 
 
-; kawa curly-infix2prefix4kawa.scm  ../AI_Deep_Learning/exo_retropropagationNhidden_layers_matrix_v2_by_vectors4kawa+.scm | tr -d '|' > ../AI_Deep_Learning/exo_retropropagationNhidden_layers_matrix_v2_by_vectors4kawa.scm
+; kawa curly-infix2prefix4kawa.scm  --kawa ../AI_Deep_Learning/exo_retropropagationNhidden_layers_matrix_v2_by_vectors4kawa+.scm | tr -d '|' > ../AI_Deep_Learning/exo_retropropagationNhidden_layers_matrix_v2_by_vectors4kawa.scm
 
 ; kawa -Dkawa.import.path=".:/Users/mattei/Scheme-PLUS-for-Kawa:./kawa"
 
@@ -19,7 +19,6 @@
 
 
 
-(require 'srfi-69) ; hash table
 
 (require matrix)
 
