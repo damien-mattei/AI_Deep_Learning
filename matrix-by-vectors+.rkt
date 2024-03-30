@@ -4,7 +4,7 @@
 
 ;; Author: Damien Mattei
 
-;; /Applications/Racket\ v8.11/bin/racket curly-infix2prefix4racket.rkt  ../../../../AI_Deep_Learning/matrix-by-vectors+.rkt > ../../../../AI_Deep_Learning/matrix-by-vectors.rkt
+;; /Applications/Racket\ v8.12/bin/racket curly-infix2prefix4racket.rkt  ../../../../AI_Deep_Learning/matrix-by-vectors+.rkt > ../../../../AI_Deep_Learning/matrix-by-vectors.rkt
 
 
 ;; use: (require "matrix-by-vectors+.rkt")
@@ -32,7 +32,10 @@
 ;;(import (srfi :43)) 
 
 
-(require "../Scheme-PLUS-for-Racket/main/Scheme-PLUS-for-Racket/Scheme+.rkt")
+;;(require "../Scheme-PLUS-for-Racket/main/Scheme-PLUS-for-Racket/Scheme+.rkt")
+(require "../Scheme-PLUS-for-Racket/main/Scheme-PLUS-for-Racket/main.rkt")
+
+
 
 (define-overload-existing-operator *) ;; create a procedure,must be before infix procedures
 

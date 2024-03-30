@@ -31,6 +31,10 @@
 
 ;; (require "exo_retropropagationNhidden_layers_matrix_v2_by_vectors.rkt")
 
+
+;;#!r6rs
+
+
 (module exo_retropropagationNhidden_layers_matrix_v2_by_vectors racket
 
 (provide (all-defined-out)) 
@@ -47,7 +51,8 @@
 (require (rename-in srfi/42
 	(: s42:))) ; Eager Comprehensions
 
-(require "../Scheme-PLUS-for-Racket/main/Scheme-PLUS-for-Racket/Scheme+.rkt")
+;;(require "../Scheme-PLUS-for-Racket/main/Scheme-PLUS-for-Racket/Scheme+.rkt")
+(require "../Scheme-PLUS-for-Racket/main/Scheme-PLUS-for-Racket/main.rkt")
 
 
 
@@ -83,9 +88,9 @@
 but will it works with Scheme+ parser?
 |#
 
-(require "matrix-by-vectors+.rkt")
+;(require "matrix-by-vectors+.rkt")
 ;; use one or the other:
-;;(require "matrix-by-vectors.rkt")
+(require "matrix-by-vectors.rkt")
 
 
 

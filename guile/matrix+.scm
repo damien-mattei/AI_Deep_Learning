@@ -21,7 +21,7 @@
 
   #:use-module ((guile)
 		#:select (*)
-		#:prefix orig:)
+		#:prefix orig:) ; not used !!!
 
   #:use-module ((srfi srfi-43)) ;; vector : vector-map  , warning vector-map has index as extra parameter...
 
