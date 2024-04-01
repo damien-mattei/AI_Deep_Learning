@@ -12,7 +12,7 @@
 ; use MacVim to show ALL the characters of this file (not Emacs, not Aquamacs)
 					; jeu de couleurs: Torte ou Koehler
 					
-; modify it to be recompiled by Racket ?   
+; modify it to be recompiled by Racket ? 1 
 
 
 ;; use in GUI 
@@ -411,6 +411,8 @@ but will it works with Scheme+ parser?
 (send r2 test Lexemples2)
 
 ;) ; end 'for'
+
+
 
 
 (printf "################## SINUS - SINE ##################")

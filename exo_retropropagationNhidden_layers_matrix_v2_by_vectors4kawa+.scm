@@ -28,13 +28,12 @@
 
 
 ;; first stage overloading
-(import (rename (scheme base) (+ orig+)))
-(import (rename (scheme base) (* orig*)))
+(import (only (scheme base) (+ orig+))) ; (* orig*)))
 
 ;(define orig+ +)
 ;(define orig* *)
 
-(define-overload-existing-operator * orig*)
+;(define-overload-existing-operator * orig*)
 (define-overload-existing-operator + orig+)
 
 (define-overload-procedure random)
@@ -45,8 +44,8 @@
 
 
 ; second stage overloading
-(overload-existing-operator * multiply-matrix-matrix (matrix? matrix?))
-(overload-existing-operator * multiply-matrix-vector (matrix? vector?))
+;(overload-existing-operator * multiply-matrix-matrix (matrix? matrix?))
+;(overload-existing-operator * multiply-matrix-vector (matrix? vector?))
 
 ;(define * (make-procedure method: (lambda (x ::number y ::number) (orig* x y))
 ;			  method: (lambda (x ::matrix y ::matrix) (multiply-matrix-matrix  x y))
@@ -54,7 +53,7 @@
 ;			  method: (lambda lyst (apply orig* lyst))))
 
 
-(insert-operator! orig* *)
+;(insert-operator! orig* *)
 
 
 (overload-existing-operator + vector-append (vector? vector?))
