@@ -413,6 +413,16 @@ but will it works with Scheme+ parser?
 ;) ; end 'for'
 
 
+(if #t then 
+
+    3
+    "yeah !!!!"
+
+    else 
+
+	"bad !"
+	7
+	8)
 
 
 (printf "################## SINUS - SINE ##################")

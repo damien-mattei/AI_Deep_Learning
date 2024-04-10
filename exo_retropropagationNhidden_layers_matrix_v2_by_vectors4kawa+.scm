@@ -13,6 +13,11 @@
 
 ; kawa curly-infix2prefix4kawa.scm  --kawa ../AI_Deep_Learning/exo_retropropagationNhidden_layers_matrix_v2_by_vectors4kawa+.scm | tr -d '|' > ../AI_Deep_Learning/exo_retropropagationNhidden_layers_matrix_v2_by_vectors4kawa.scm
 
+; or:
+
+;kawa ../curly-infix2prefix4kawa.scm  --kawa exo_retropropagationNhidden_layers_matrix_v2_by_vectors4kawa+.scm | tr -d '|' > exo_retropropagationNhidden_layers_matrix_v2_by_vectors4kawa.scm
+; 
+
 ; kawa -Dkawa.import.path=".:/Users/mattei/Scheme-PLUS-for-Kawa:./kawa"
 
 ; (load "exo_retropropagationNhidden_layers_matrix_v2_by_vectors4kawa.scm")
