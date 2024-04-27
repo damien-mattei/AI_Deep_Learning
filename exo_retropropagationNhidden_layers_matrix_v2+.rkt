@@ -1,4 +1,4 @@
-#lang reader "../Scheme-PLUS-for-Racket/main/Scheme-PLUS-for-Racket/SRFI/SRFI-105.rkt" ; SRFI-105 Curly-infix-expressions
+#lang reader "../Scheme-PLUS-for-Racket/main/Scheme-PLUS-for-Racket/src/SRFI-105.rkt" ; SRFI-105 Curly-infix-expressions
 
 
 ; Deep Learning : back propagation, gradient descent, neural network with N hidden layers
@@ -32,7 +32,11 @@
 (current-namespace bsns)
 
 
-(require srfi/42) ; Eager Comprehensions
+;(require srfi/42) ; Eager Comprehensions
+
+(require (rename-in srfi/42
+	(: s42:))) ; Eager Comprehensions
+
 
 (require (rename-in flomat (repeat repeat-flomat)
 			   (shape shape-flomat)
@@ -40,7 +44,7 @@
 
 (require "matrix+.rkt")
 
-(require "../Scheme-PLUS-for-Racket/main/Scheme-PLUS-for-Racket/Scheme+.rkt")
+(require "../Scheme-PLUS-for-Racket/main/Scheme-PLUS-for-Racket/src/Scheme+.rkt")
 
 ; first stage overloading
 (define-overload-existing-operator +)
@@ -154,7 +158,7 @@ but will it works with Scheme+ parser?
 
 	 (define-pointwise-unary uniform) ;; flomat library feature
 
-	 {M <+ (vector-ec (: n {lnc - 1}) ; vectors by eager comprehension (SRFI 42)
+	 {M <+ (vector-ec (s42: n {lnc - 1}) ; vectors by eager comprehension (SRFI 42)
 			  (.uniform! (zeros {nc[n + 1]} {nc[n] + 1})))} ;; flomat Matrix
 					   
 	 (display "M=") (display M) (newline)
@@ -405,12 +409,12 @@ but will it works with Scheme+ parser?
 				   (activation_function_hidden_layer_derivative der_atan)
 				   (activation_function_output_layer_derivative der_tanh))}
 
-{Llearning <+ (vector-ec (:list x (list-ec (: n 10000)
+{Llearning <+ (vector-ec (:list x (list-ec (s42: n 10000)
 					   (uniform (- pi) pi)))
 			 (cons (vector x) (vector (sin x))))   ; vectors by eager comprehension (SRFI 42)
 	   }  ; use pairs in Scheme instead of vectors in Python
 
-{Ltest <+ (vector-ec (:list x (list-ec (: n 10)
+{Ltest <+ (vector-ec (:list x (list-ec (s42: n 10)
 				       (uniform {(- pi) / 2} {pi / 2})))
 		     (cons (vector x) (vector (sin x))))   ; vectors by eager comprehension (SRFI 42)
        }  ; use pairs in Scheme instead of vectors in Python
