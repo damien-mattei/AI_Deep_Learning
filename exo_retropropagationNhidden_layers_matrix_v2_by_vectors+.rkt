@@ -29,6 +29,8 @@
 
 ;; and you need to modify the code to load the parsed included module files (no + in name: example: matrix-by-vectors.rkt
 
+;; or : make -f Makefile.Racket
+
 ;; (require "exo_retropropagationNhidden_layers_matrix_v2_by_vectors.rkt")
 
 
