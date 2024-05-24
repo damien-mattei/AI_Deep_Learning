@@ -5,13 +5,13 @@
 # tree structure directories:
 # .
 # Makefile
-# guile/
-# guile/module_directory
+# guile/*+.scm source code
+# guile/module_directory/*+.scm modules
 
-
+SHELL := /bin/bash
 
 # program to build
-MYPROGRAM=exo_retropropagationNhidden_layers_matrix_v2_by_vectors4guile+.scm
+#MYPROGRAM=exo_retropropagationNhidden_layers_matrix_v2_by_vectors4guile+.scm
 
 # path to Scheme+ for Guile directory
 SCHEME_PLUS_FOR_GUILE=../Scheme-PLUS-for-Guile
@@ -53,15 +53,19 @@ $(MODULE_DIRECTORY) :
 
 
 # create Scheme files (*.scm and *-.scm) by parsing Scheme+ files (*+.scm)
+# if the file is empty it will stop further Makefile call so i remove it:
+
+.DELETE_ON_ERROR:
+
 $(MODULE_DIRECTORY)/%+.scm $(SRC_DIR)/%-.scm: $(SRC_DIR)/%+.scm
 	@echo PARSING $< :
 	$(PARSER) $< > $@
+
 
 # create Scheme files (*.scm) by parsing Scheme+ files (*+.scm)
 %.scm: %+.scm
 	@echo PARSING $< :
 	$(PARSER) $< > $@
-
 
 clean:
 	rm -rf $(OBJECT)

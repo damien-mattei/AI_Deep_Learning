@@ -387,7 +387,8 @@ but will it works with Scheme+ parser?
 				   (activation_function_hidden_layer_derivative der_σ)
 				   (activation_function_output_layer_derivative der_σ))}
 
-{Lexemples1 <- #((#(1) . #(0)) (#(0) . #(1)))}  ; use pairs in Scheme instead of vectors in Python
+{Lexemples1 <- #((#(1) . #(0))
+		 (#(0) . #(1)))}  ; use pairs in Scheme instead of vectors in Python
 
 (send r1 apprentissage Lexemples1)
 
@@ -408,7 +409,10 @@ but will it works with Scheme+ parser?
 				   (activation_function_hidden_layer_derivative der_σ)
 				   (activation_function_output_layer_derivative der_σ))}
 
-{Lexemples2 <- #( (#(1 0) . #(1))  (#(0 0) . #(0))  (#(0 1) . #(1))  (#(1 1) . #(0)))}  ; use pairs in Scheme instead of vectors in Python
+{Lexemples2 <- #( (#(1 0) . #(1))
+		  (#(0 0) . #(0))
+		  (#(0 1) . #(1))
+		  (#(1 1) . #(0)) )}  ; use pairs in Scheme instead of vectors in Python
 
 (send r2 apprentissage Lexemples2)
 
