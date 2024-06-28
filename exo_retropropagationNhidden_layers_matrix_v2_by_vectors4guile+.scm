@@ -13,16 +13,6 @@
 ; fastest way: (load "exo_retropropagationNhidden_layers_matrix_v2_by_vectors4guile+.scm")
 
 
-; or build:
-
-;./curly-infix2prefix4guile.scm    ../AI_Deep_Learning/exo_retropropagationNhidden_layers_matrix_v2_by_vectors4guile+.scm > ../AI_Deep_Learning/exo_retropropagationNhidden_layers_matrix_v2_by_vectors4guile.scm
-
-; or: make -f Makefile.Guile
-
-; use: (load "exo_retropropagationNhidden_layers_matrix_v2_by_vectors4guile.scm")
-
-; or use : (load "exo_retropropagationNhidden_layers_matrix_v2_by_vectors4guile+.scm")
-
 ; in case of problem: rm -rf .cache/guile/
 
 #|  note: this file can run in two ways:
