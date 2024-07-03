@@ -3,14 +3,22 @@
 ;; Kawa version
 
 
-; kawa curly-infix2prefix4kawa.scm  ../AI_Deep_Learning/kawa/matrix+.scm | tr -d '|'  > ../AI_Deep_Learning/kawa/matrix.scm
+; make -f Makefile.Kawa all
 
-; kawa -Dkawa.import.path=".:/Users/mattei/Scheme-PLUS-for-Kawa:./kawa"
+; kawa curly-infix2prefix4kawa.scm  --srfi-105 ../AI_Deep_Learning/kawa/matrix+.scm | tr -d '|'  > ../AI_Deep_Learning/kawa/module_directory/matrix.scm
+
+; kawa -Dkawa.import.path=".:/Users/mattei/Scheme-PLUS-for-Kawa:./kawa/module_directory"
 
 ;; use with Scheme+: (require matrix)
 
 
 (module-name "matrix")
+
+;(define-library (matrix)
+
+(import (Scheme+)
+        (array))
+
 
 (export multiply-matrix-matrix
 	multiply-matrix-vector
@@ -29,13 +37,10 @@
 	*
 	)
 
-(require Scheme+)
-
-(require array)
-
+	
 ;; first stage overloading
 ;(define orig* *)
-(import (only (scheme base) (* orig*)))
+(import (only (kawa base) (* orig*)))
 
 (define-overload-existing-operator * orig*)
 
@@ -186,5 +191,8 @@
 ;; overload [ ] 
 (overload-square-brackets matrix-ref matrix-set!  (matrix? number? number?))
 (overload-square-brackets matrix-line-ref matrix-line-set! (matrix? number?))
+
+
+;) ; end module
 
 

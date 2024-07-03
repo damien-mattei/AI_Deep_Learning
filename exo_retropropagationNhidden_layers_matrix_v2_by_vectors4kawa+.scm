@@ -11,29 +11,28 @@
 ; jeu de couleurs: Torte ou Koehler
 
 
-; kawa curly-infix2prefix4kawa.scm  --kawa ../AI_Deep_Learning/exo_retropropagationNhidden_layers_matrix_v2_by_vectors4kawa+.scm | tr -d '|' > ../AI_Deep_Learning/exo_retropropagationNhidden_layers_matrix_v2_by_vectors4kawa.scm
+; make -f Makefile.Kawa all
 
 ; or:
 
-;kawa ../curly-infix2prefix4kawa.scm  --kawa exo_retropropagationNhidden_layers_matrix_v2_by_vectors4kawa+.scm | tr -d '|' > exo_retropropagationNhidden_layers_matrix_v2_by_vectors4kawa.scm
-; 
 
-; kawa -Dkawa.import.path=".:/Users/mattei/Scheme-PLUS-for-Kawa:./kawa"
+; kawa curly-infix2prefix4kawa.scm  --kawa --srfi-105 ../AI_Deep_Learning/exo_retropropagationNhidden_layers_matrix_v2_by_vectors4kawa+.scm | tr -d '|' > ../AI_Deep_Learning/exo_retropropagationNhidden_layers_matrix_v2_by_vectors4kawa.scm
+
+
+;kawa -Dkawa.import.path=".:/Users/mattei/Scheme-PLUS-for-Kawa:./kawa/module_directory"
 
 ; (load "exo_retropropagationNhidden_layers_matrix_v2_by_vectors4kawa.scm")
 
 
 
-
+(require Scheme+)
+(require array)
 (require matrix)
 
-(require Scheme+)
-
-(require array)
 
 
 ;; first stage overloading
-(import (only (scheme base) (+ orig+))) ; (* orig*)))
+(import (only (kawa base) (+ orig+))) ; (* orig*)))
 
 ;(define orig+ +)
 ;(define orig* *)
@@ -68,7 +67,7 @@
 ;			  method: (lambda lyst (apply orig+ lyst))))
 
 
-(insert-operator! orig+ +)
+;;(insert-operator! orig+ +)
 
 
 (overload-procedure random java.lang.Math:random ())
@@ -257,14 +256,18 @@
   (declare x y)
   (for-each-in (it (in-range nbiter)) ; le nombre d'itérations est fixé !
 		 
-	       	 (when {it % 1000 = 0}
-		       (display it)(newline))
+	       	 (if {it % 1000 = 0} then
+		     (display it)(newline))
 
 		 ;;(display it)(newline)
 		 
 		 ;{err <+ 0.0} ; l'erreur totale pour cet exemple
 
-		 {(x y) <- Lexemples[ip]}         ; un nouvel exemple à apprendre
+		 ;;{(x y) <- Lexemples[ip]}         ; un nouvel exemple à apprendre
+
+		 {x <- (car Lexemples[ip])}         ; un nouvel exemple à apprendre
+		 {y <- (cdr Lexemples[ip])} 
+
 
 		 ;; PROPAGATION VERS L'AVANT
 		 (accepte_et_propage x)       ; sorties obtenues sur l'exemple courant, self.z_k et z_j sont mis à jour
@@ -301,11 +304,9 @@
 				{nc <+ vector-length(z[i])}
 				{ns <+ vector-length(z[i + 1])}
 				(for-each-in (j (in-range nc))
-					{ᐁ[i][j] <- ($+>
-							{sum <+ 0}  
-							(for-each-in (k (in-range ns))
-							     {sum <- sum + მzⳆმz̃(z[i + 1][k] z̃[i + 1][k]) * M[i][k {j + 1}] * ᐁ[i + 1][k]})
-							sum)})
+					{ᐁ[i][j] <- 0}
+					(for-each-in (k (in-range ns))
+						{ᐁ[i][j] <- ᐁ[i][j] + მzⳆმz̃(z[i + 1][k] z̃[i + 1][k]) * M[i][k {j + 1}] * ᐁ[i + 1][k]}))
 				;; modification des poids de la matrice de transition de la couche i-1 à i
 				{modification_des_poids(M[i - 1] ηₛ  z[i - 1] z[i] z̃[i] ᐁ[i] მzⳆმz̃)})
 
@@ -327,7 +328,11 @@
 
 	  (declare entree sortie_attendue ᐁ)
 	  (for-each-in (entree-sortie_attendue Lexemples)
-		{(entree sortie_attendue) <- entree-sortie_attendue} ; use pairs in Scheme instead of tuples and vectors in Python
+
+		;{(entree sortie_attendue) <- entree-sortie_attendue} ; use pairs in Scheme instead of tuples and vectors in Python
+		{entree <- (car entree-sortie_attendue)} 
+		{sortie_attendue <- (cdr entree-sortie_attendue)} 
+
 		(accepte_et_propage entree)
 		(format #t "~a --> ~a : on attendait ~a~%" entree {z[vector-length(z) - 1]} sortie_attendue)  ; ~% is(newline)
 		{ᐁ <- sortie_attendue[0] - z[vector-length(z) - 1][0]} ; erreur sur un element

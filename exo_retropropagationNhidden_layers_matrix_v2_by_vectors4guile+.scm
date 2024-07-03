@@ -333,12 +333,9 @@ but will it works with all Scheme+ parser?
 				{nc <+ vector-length(z[i])}
 				{ns <+ vector-length(z[i + 1])}
 				(for-each-in (j (in-range nc))
-					       {k <+ 0} ; should be commented ?
-					       {ᐁ[i][j] <- ($+>
-							    {sum <+ 0}  
-							    (for-each-in (k (in-range ns))
-								{sum <- sum + მzⳆმz̃(z[i + 1][k] z̃[i + 1][k]) * M[i][k {j + 1}] * ᐁ[i + 1][k]})
-							    sum)})
+					     {ᐁ[i][j] <- 0}
+					     (for-each-in (k (in-range ns))
+						{ᐁ[i][j] <- ᐁ[i][j] + მzⳆმz̃(z[i + 1][k] z̃[i + 1][k]) * M[i][k {j + 1}] * ᐁ[i + 1][k]}))
 				;; modification des poids de la matrice de transition de la couche i-1 à i
 				{modification_des_poids(M[i - 1] ηₛ  z[i - 1] z[i] z̃[i] ᐁ[i] მzⳆმz̃)})
 

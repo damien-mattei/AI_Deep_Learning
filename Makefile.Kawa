@@ -1,0 +1,85 @@
+# example of Makefile for Scheme+ for Kawa
+# Makefile for back-propagation program
+# author: Damien Mattei
+# Makefile for back-propagation program
+# author: Damien Mattei
+
+# tree structure directories:
+# .
+# Makefile
+# kawa/*+.scm source code
+# kawa/module_directory/*+.scm modules
+
+SHELL := /bin/bash
+
+# program to build
+#MYPROGRAM=exo_retropropagationNhidden_layers_matrix_v2_by_vectors4kawa+.scm
+
+SCHEME=kawa
+
+# path to Scheme+ for kawa directory
+SCHEME_PLUS_FOR_KAWA=../Scheme-PLUS-for-Kawa
+
+SRC_DIR=kawa
+
+# Scheme+ for Kawa parser
+PARSER:=$(SCHEME_PLUS_FOR_KAWA)/curly-infix2prefix4kawa.scm
+
+PARSER_COMMAND=$(SCHEME) $(PARSER)
+
+PARSER_OPTIONS=--srfi-105
+
+PARSER_OPTIONS_MAIN=--kawa $(PARSER_OPTIONS) # allow more compatibility with Kawa syntax (different from Scheme)
+
+# sub directory where parsed module files will be generated
+MODULE_DIRECTORY=$(SRC_DIR)/module_directory
+
+# result of parsing (parsed file name)
+PROGRAM_PARSED=exo_retropropagationNhidden_layers_matrix_v2_by_vectors4kawa.scm
+
+# Kawa modules to build
+MODULES_NAME=matrix.scm
+MODULES=$(addprefix $(MODULE_DIRECTORY)/,$(MODULES_NAME))
+
+# files that are simply included in source code
+#INCLUDED_FILES=$(SRC_DIR)/
+
+# files to parse
+OBJECT= $(MODULES) $(PROGRAM_PARSED) #$(INCLUDED_FILES) 
+
+# find the system directory for Kawa modules
+#SITE_DIR=
+
+
+# create directory, build objects
+# note: object modules have the basename of the source file with removing of the + character  and can be in different directories or in the same
+all: $(MODULE_DIRECTORY) $(OBJECT) 
+
+
+# create the sub directory where some parsed module files will be
+$(MODULE_DIRECTORY) :
+	mkdir $@
+
+
+# create Scheme files (*.scm , *+.scm , *-.scm)  by parsing Scheme+ files (*+.scm)
+# if an error occur and the file is empty it will stop further Makefile call so i remove it:
+
+.DELETE_ON_ERROR:
+
+$(MODULE_DIRECTORY)/%.scm $(SRC_DIR)/%-.scm: $(SRC_DIR)/%+.scm
+	@echo PARSING $< :
+	$(PARSER_COMMAND) $(PARSER_OPTIONS) $< | tr -d '|' > $@
+
+
+# create Scheme files (*.scm) by parsing Scheme+ files (*+.scm)
+%.scm: %+.scm
+	@echo PARSING $< :
+	$(PARSER_COMMAND) $(PARSER_OPTIONS_MAIN) $< | tr -d '|' > $@
+
+clean:
+	rm -rf $(OBJECT)
+	rm -rf $(MODULE_DIRECTORY)
+
+# install:
+# 	cp $(MODULES) $(SITE_DIR)
+
