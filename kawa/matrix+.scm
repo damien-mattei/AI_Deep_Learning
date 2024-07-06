@@ -71,8 +71,15 @@
    (set! v vParam))
 
   ;; Need a default constructor as well.
-  ((*init*) (values))); bug parser: but (values) = #!void
+  ((*init*) (values)); #!void bugs scheme+ parser: but (values) = #!void
 
+  ((display-matrix)
+   (define that (this)) ;  that avoid (this):v to be transformed by scheme+ parser in (this) :v which bugs
+   (display "Matrix:") (newline)
+   (display (this)) (newline)
+   (display that:v) (newline))
+
+  ) ; end class
 
 (define-simple-class matrix-float (matrix)
   ;; A constructor which calls the superclass constructor.
