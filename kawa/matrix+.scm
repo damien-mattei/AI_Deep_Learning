@@ -93,7 +93,7 @@
 
 
 (define (matrix-scheme? M)
-  {(matrix? M) and (not (matrix-float? M))})
+  {(matrix? M) and (not (matrix-float? M)) and (not (matrix-double? M))})
 
 
 ;; (define M (create-matrix-by-function (lambda (i j) (+ i j)) 2 3))
