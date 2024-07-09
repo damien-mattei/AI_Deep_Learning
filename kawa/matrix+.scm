@@ -73,6 +73,8 @@
 	matrix-column->vector
 
 	* ; note that i export here the overloaded * operator
+
+	;;display-matrix
 	)
 
 	
@@ -92,11 +94,11 @@
   (v); :: vector)
 
   ((*init* vParam); :: vector)
-   (display "Constructor matrix") (newline)
-   (display (this)) (newline)
-   (define that (this)) ;  that avoid (this):v to be transformed by scheme+ parser in (this) :v which bugs  
+   ;(display "Constructor matrix") (newline)
+   ;(display (this)) (newline)
+   ;(define that (this)) ;  that avoid (this):v to be transformed by scheme+ parser in (this) :v which bugs  
    (set! v vParam)
-   (display that:v) (newline)
+   ;(display that:v) (newline)
    )
 
   ;; Need a default constructor as well.
@@ -107,6 +109,12 @@
    (display "Matrix:") (newline)
    (display (this)) (newline)
    (display that:v) (newline))
+
+  ((dim)
+   (dim-matrix (this)))
+
+  ((apply f)
+   (apply-matrix f (this)))
 
   ) ; end class
 
@@ -126,8 +134,14 @@
   ((*init* vParam) ;(vParam :: f64vector))
    (invoke-special matrix (this) '*init* vParam)
    ;;(display "Constructor matrix-f64") (newline)
-   )) ;  class inheritance
+   ) ;  class inheritance
 
+  ;; ((display-matrix)
+  ;;  (define that (this)) ;  that avoid (this):v to be transformed by scheme+ parser in (this) :v which bugs
+  ;;  (display "Matrix-f64:") (newline)
+  ;;  (display (this)) (newline)
+  ;;  (display that:v) (newline))
+  )
 
 (define-simple-class matrix-f32 (matrix)
   ;; A constructor which calls the superclass constructor.
@@ -135,6 +149,21 @@
    (invoke-special matrix (this) '*init* vParam)
    ;;(display "Constructor matrix-f32") (newline)
    )) ;  class inheritance
+
+
+
+
+
+
+
+
+
+
+;; (define (display-matrix M)
+;;  (display "Matrix:") (display M) (newline)
+;;  (display (matrix-v M)) (newline))
+
+
 
 (define (matrix-scheme? M)
   {(matrix? M) and (not (matrix-float? M)) and (not (matrix-double? M)) and (not (matrix-f64? M)) and (not (matrix-f32? M))})
@@ -290,13 +319,15 @@
   
   (when {p1 ≠ n2} (error "matrix.* : matrix product impossible, incompatible dimensions"))
   
-  {v1 <+ (matrix-v M1)}
-  {v2 <+ (matrix-v M2)}
+  ;;{v1 <+ (matrix-v M1)}
+  ;;{v2 <+ (matrix-v M2)}
+  ;; {v1 <+ M1:v}
+  ;; {v2 <+ M2:v}
   
   (define (res i j)
     (define sum :: double 0.0)
     (for ({k <+ 0} {k < p1} {k <- k + 1})
-	 {sum <- sum + v1[i][k] * v2[k][j]})
+	 {sum <- sum + M1:v[i][k] * M2:v[k][j]}) ; Kawa M:v syntax
 	 ;(display "sum=")(display sum) (newline)
     sum)
 
@@ -498,6 +529,12 @@
 
 (overload-square-brackets matrix-f32-ref matrix-f32-set!  (matrix-f32? number? number?))
 (overload-square-brackets matrix-f32-line-ref matrix-f32-line-set! (matrix-f32? number?))
+
+
+; apply a function to each elements of the matrix
+(define (apply-matrix f M)
+  (vector-map (lambda (v) (vector-map f v))
+	      M:v))
 
 
 ;) ; end module

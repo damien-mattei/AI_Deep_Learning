@@ -15,7 +15,7 @@
 
 ;kawa -Dkawa.import.path=".:/Users/mattei/Scheme-PLUS-for-Kawa:./kawa/module_directory"
 
-; (load "exo_retropropagationNhidden_layers_matrix_v2_by_vectors4kawa-f32.scm")
+; (load "exo_retropropagationNhidden_layers_matrix_v2_by_vectors4kawa-8-16.scm")
 
 
 
@@ -65,13 +65,13 @@
 
 
 
-(define f0 (->float 0.0))
-(define f1 (->float 1.0))
+(define d0 (->double 0.0))
+(define d1 (->double 1.0))
 
 
 
 (overload-procedure random 
-		    (lambda () (->float (java.lang.Math:random))) 
+		    (lambda () (->double (java.lang.Math:random))) 
 		    ())
 
 
@@ -80,39 +80,39 @@
 (overload-procedure random random-int (integer?))
 
 
-(define (uniform-dummy dummy1 dummy2) (->float {-1.0 + (random) * 2.0}))
+(define (uniform-dummy dummy1 dummy2) (->double {-1.0 + (random) * 2.0}))
 
 				
 
 ; return a random number between [inf, sup]
-(define (uniform-interval inf :: float sup :: float)
+(define (uniform-interval inf :: double sup :: double)
  
-  (define gap :: float {sup - inf})
+  (define gap :: double {sup - inf})
   {inf + gap * (random)})
 
 
 ; sigmoïde
-(define (σ z̃ :: float) 
-  {f1 / {f1 + (exp (- z̃))}})
+(define (σ z̃ :: double) 
+  {d1 / {d1 + (exp (- z̃))}})
 
 ; some derivatives
-(define (der_tanh z :: float 
-		  z̃ :: float)
-  {f1 - z ** 2})	
+(define (der_tanh z :: double 
+		  z̃ :: double)
+  {d1 - z ** 2})	
 
-(define (der_σ z :: float 
-	       z̃ :: float)
-    {z * {f1 - z}})
+(define (der_σ z :: double 
+	       z̃ :: double)
+    {z * {d1 - z}})
 
-(define (der_atan z :: float 
-		  z̃ :: float)
-  {1 / {f1 + z̃ ** 2}})
+(define (der_atan z :: double 
+		  z̃ :: double)
+  {1 / {d1 + z̃ ** 2}})
 
 
 
 ; modify coefficients layer
 (define (modification_des_poids M_i_o 
-			        η :: float 
+			        η :: double 
  				z_input
 				z_output
 				z̃_output	
@@ -120,7 +120,7 @@
 				მzⳆმz̃) ; derivative of activation function of the layer
 	 
 	  ; the length of output and input layer with coeff. used for bias update
-	  {(len_layer_output len_layer_input_plus1forBias) <+ (dim-matrix M_i_o)} ; use values and define-values to create bindings
+	  {(len_layer_output len_layer_input_plus1forBias) <+ (M_i_o:dim)} ;(dim-matrix M_i_o)} ; use values and define-values to create bindings 
         
 	  {len_layer_input <+ len_layer_input_plus1forBias - 1}
 
@@ -144,7 +144,7 @@
   (activation_function_hidden_layer_derivative)
   (activation_function_output_layer_derivative)
 
-  (ηₛ :: float 1.0)
+  (ηₛ :: double 1.0)
 
   (z)
   (z̃)
@@ -153,10 +153,10 @@
 
   (ᐁ)
 
-  (eror :: float 0.0)
+  (eror :: double 0.0)
 
   ((*init* nc nbiter0 
-	   ηₛ0 :: float
+	   ηₛ0 :: double
  	   activation_function_hidden_layer0
            activation_function_output_layer0
 	   activation_function_hidden_layer_derivative0
@@ -172,7 +172,7 @@
 
    {lnc <+ (vector-length nc)}
 
-   (define (make-vector-z lg) (make-vector lg f0))
+   (define (make-vector-z lg) (make-vector lg d0))
 
    {z <- (vector-map make-vector-z nc)}
    (display "z=") (display z) (newline)
@@ -183,7 +183,7 @@
 
    (display "z̃=") (display z̃) (newline)
 
-   {M <- (vector-map (lambda (n) create-matrix-f32-by-function(uniform-dummy nc[n + 1] {nc[n] + 1})) ;; Matrix-vect
+   {M <- (vector-map (lambda (n) create-matrix-f64-by-function(uniform-dummy nc[n + 1] {nc[n] + 1})) ;; Matrix-vect
  		     [0 <: (- lnc 1)])}	; in Kawa special syntax we can not use infix expression
 
    (display "M=") (display M) (newline)
@@ -325,7 +325,7 @@
 				{nc <+ vector-length(z[i])}
 				{ns <+ vector-length(z[i + 1])}
 				(for-each-in (j (in-range nc))
-					{ᐁ[i][j] <- f0}
+					{ᐁ[i][j] <- d0}
 					(for-each-in (k (in-range ns))
 						{ᐁ[i][j] <- ᐁ[i][j] + მzⳆმz̃(z[i + 1][k] z̃[i + 1][k]) * M[i][k {j + 1}] * ᐁ[i + 1][k]}))
 				;; modification des poids de la matrice de transition de la couche i-1 à i
@@ -345,7 +345,7 @@
   ((test Lexemples)
 
           (display "Test des exemples :") (newline)
-          {err <+ f0}
+          {err <+ d0}
 
 	  (declare entree sortie_attendue ᐁ)
 	  (for-each-in (entree-sortie_attendue Lexemples)
@@ -359,14 +359,13 @@
 		{ᐁ <- sortie_attendue[0] - z[vector-length(z) - 1][0]} ; erreur sur un element
 		{err <- err + ᐁ ** 2}) ; l'erreur quadratique totale
 		
-	  {err <- err * (->float 0.5)}
-	  (display "Error on examples=") (display err) (newline)
+	  {err <- err * (->double 0.5)}
+	  (display "Error on examples=") (display err) (newline))
 	
-	  (display "Matrix =") (newline)
-	  (for-each (lambda (mt) (mt:display-matrix)
-				 (newline))
-		    M))
+	  
 
+
+   
 ) ; end class	
 
 
@@ -397,11 +396,16 @@
 {r1 <+ (ReseauRetroPropagation  #(1 2 1) 5000 10 σ σ der_σ der_σ)}
 
 ;{Lexemples1 <+ #((#(1) . #(0)) (#(0) . #(1)))}  ; use pairs in Scheme instead of vectors in Python
-{Lexemples1 <+ (vector (cons (vector f1) (vector f0))
-		       (cons (vector f0) (vector f1)))}
-
+{Lexemples1 <+ (vector (cons (vector d1) (vector d0))
+		       (cons (vector d0) (vector d1)))}
 
 (r1:apprentissage Lexemples1)
+
+(newline)
+(display "Matrix vector r1:M=") (newline)
+(for-each (lambda (mt) (mt:display-matrix)
+			(newline))
+	  r1:M)
 
 (r1:test Lexemples1)
 
@@ -431,10 +435,10 @@
 {r2 <+ (ReseauRetroPropagation  #(2 8 1) 250000 0.1 σ σ der_σ der_σ)} ; 3' 22"
 
 ;{Lexemples2 <+ #( (#(1 0) . #(1))  (#(0 0) . #(0))  (#(0 1) . #(1))  (#(1 1) . #(0)))}  ; use pairs in Scheme instead of vectors in Python
-{Lexemples2 <+ (vector (cons (vector f1 f0) (vector f1))
-		       (cons (vector f0 f0) (vector f0))
-  		       (cons (vector f0 f1) (vector f1))
-		       (cons (vector f1 f1) (vector f0)))}  
+{Lexemples2 <+ (vector (cons (vector d1 d0) (vector d1))
+		       (cons (vector d0 d0) (vector d0))
+  		       (cons (vector d0 d1) (vector d1))
+		       (cons (vector d1 d1) (vector d0)))}  
 
 (r2:apprentissage Lexemples2)
 
