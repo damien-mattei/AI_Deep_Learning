@@ -64,18 +64,14 @@
 ;;(insert-operator! orig+ +)
 
 
-(define-syntax to-float
-  (syntax-rules ()
-    ((_ expr) (begin (define rv :: float expr)
-		     rv))))
 
-(define f0 (to-float 0.0))
-(define f1 (to-float 1.0))
+(define f0 (->float 0.0))
+(define f1 (->float 1.0))
 
 
 
 (overload-procedure random 
-		    (lambda () (to-float (java.lang.Math:random))) 
+		    (lambda () (->float (java.lang.Math:random))) 
 		    ())
 
 
@@ -84,7 +80,7 @@
 (overload-procedure random random-int (integer?))
 
 
-(define (uniform-dummy dummy1 dummy2) (to-float {-1.0 + (random) * 2.0}))
+(define (uniform-dummy dummy1 dummy2) (->float {-1.0 + (random) * 2.0}))
 
 				
 
@@ -102,7 +98,7 @@
 ; some derivatives
 (define (der_tanh z :: float 
 		  z̃ :: float)
-  {f1 - z ** (to-float 2.0)})	
+  {f1 - z ** (->float 2.0)})	
 
 (define (der_σ z :: float 
 	       z̃ :: float)
@@ -110,7 +106,7 @@
 
 (define (der_atan z :: float 
 		  z̃ :: float)
-  {1 / {f1 + z̃ ** (to-float 2.0)}})
+  {1 / {f1 + z̃ ** (->float 2.0)}})
 
 
 
@@ -363,7 +359,7 @@
 		{ᐁ <- sortie_attendue[0] - z[vector-length(z) - 1][0]} ; erreur sur un element
 		{err <- err + ᐁ ** 2}) ; l'erreur quadratique totale
 		
-	  {err <- err * (to-float 0.5)}
+	  {err <- err * (->float 0.5)}
 	  (display "Error on examples=") (display err) (newline))
 
 ) ; end class	

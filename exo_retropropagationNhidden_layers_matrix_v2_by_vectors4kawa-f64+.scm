@@ -15,7 +15,7 @@
 
 ;kawa -Dkawa.import.path=".:/Users/mattei/Scheme-PLUS-for-Kawa:./kawa/module_directory"
 
-; (load "exo_retropropagationNhidden_layers_matrix_v2_by_vectors4kawa-double.scm")
+; (load "exo_retropropagationNhidden_layers_matrix_v2_by_vectors4kawa-f64.scm")
 
 
 
@@ -183,7 +183,7 @@
 
    (display "z̃=") (display z̃) (newline)
 
-   {M <- (vector-map (lambda (n) create-matrix-double-by-function(uniform-dummy nc[n + 1] {nc[n] + 1})) ;; Matrix-vect
+   {M <- (vector-map (lambda (n) create-matrix-f64-by-function(uniform-dummy nc[n + 1] {nc[n] + 1})) ;; Matrix-vect
  		     [0 <: (- lnc 1)])}	; in Kawa special syntax we can not use infix expression
 
    (display "M=") (display M) (newline)

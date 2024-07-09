@@ -183,6 +183,8 @@
 
 ((accepte_et_propage x) ; on entre des entrées et on les propage
   
+  ;(display "start accepte_et_propage") (newline)
+
   (when {vector-length(x) ≠ vector-length(z[0])} 
 	(display "Mauvais nombre d'entrées !") (newline)
 	(exit #f))
@@ -244,6 +246,9 @@
   ;; calcul des réponses des neurones de la couche de sortie
   {z[i + 1] <- vector-map(activation_function_output_layer z̃[i + 1])}
   ;;(display "z[i + 1] = ") (display {z[i + 1]}) (newline)
+
+  ;(display "end accepte_et_propage") (newline)
+
   
   ) ; end method
 

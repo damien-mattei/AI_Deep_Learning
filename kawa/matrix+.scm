@@ -33,18 +33,42 @@
 	multiply-matrix-matrix-double
 	
 	multiply-matrix-vector
+	
 	matrix
+	matrix-float
+	matrix-double
+	matrix-f64
+	matrix-f32
+	
 	matrix-v
 	
 	create-matrix-by-function
 	create-matrix-float-by-function
 	create-matrix-double-by-function
+	create-matrix-f64-by-function
+	create-matrix-f32-by-function
+
 	
 	dim-matrix
+	
 	matrix-ref
 	matrix-set!
+	
+	matrix-f64-ref
+	matrix-f64-set!
+
+	matrix-f32-ref
+	matrix-f32-set!
+	 
 	matrix-line-ref
 	matrix-line-set!
+
+	matrix-f64-line-ref
+	matrix-f64-line-set!
+
+	matrix-f32-line-ref
+	matrix-f32-line-set!
+	
 	vector->matrix-column
 	matrix-column->vector
 
@@ -65,10 +89,15 @@
 
 (define-simple-class matrix ()
 
-  (v :: vector)
+  (v); :: vector)
 
-  ((*init* (vParam :: vector)) 
-   (set! v vParam))
+  ((*init* vParam); :: vector)
+   (display "Constructor matrix") (newline)
+   (display (this)) (newline)
+   (define that (this)) ;  that avoid (this):v to be transformed by scheme+ parser in (this) :v which bugs  
+   (set! v vParam)
+   (display that:v) (newline)
+   )
 
   ;; Need a default constructor as well.
   ((*init*) (values)); #!void bugs scheme+ parser: but (values) = #!void
@@ -83,17 +112,32 @@
 
 (define-simple-class matrix-float (matrix)
   ;; A constructor which calls the superclass constructor.
-  ((*init* (vParam :: vector))
+  ((*init* vParam); :: vector)
    (invoke-special matrix (this) '*init* vParam))) ;  class inheritance
 
 (define-simple-class matrix-double (matrix)
   ;; A constructor which calls the superclass constructor.
-  ((*init* (vParam :: vector))
+  ((*init* vParam); :: vector);(vParam :: vector))
    (invoke-special matrix (this) '*init* vParam))) ;  class inheritance
 
 
+(define-simple-class matrix-f64 (matrix)
+  ;; A constructor which calls the superclass constructor.
+  ((*init* vParam) ;(vParam :: f64vector))
+   (invoke-special matrix (this) '*init* vParam)
+   ;;(display "Constructor matrix-f64") (newline)
+   )) ;  class inheritance
+
+
+(define-simple-class matrix-f32 (matrix)
+  ;; A constructor which calls the superclass constructor.
+  ((*init* vParam) 
+   (invoke-special matrix (this) '*init* vParam)
+   ;;(display "Constructor matrix-f32") (newline)
+   )) ;  class inheritance
+
 (define (matrix-scheme? M)
-  {(matrix? M) and (not (matrix-float? M)) and (not (matrix-double? M))})
+  {(matrix? M) and (not (matrix-float? M)) and (not (matrix-double? M)) and (not (matrix-f64? M)) and (not (matrix-f32? M))})
 
 
 ;; (define M (create-matrix-by-function (lambda (i j) (+ i j)) 2 3))
@@ -106,6 +150,21 @@
 
 (define (create-matrix-double-by-function fct lin col)
   (matrix-double (create-vector-2d fct lin col)))
+
+(define (create-matrix-f64-by-function fct lin col)
+  (display "create-matrix-f64-by-function") (newline)
+  (define m (create-f64vector-2d fct lin col))
+  (display "m created") (newline)
+  (matrix-f64 m))
+					;(matrix-f64 (create-f64vector-2d fct lin col)))
+
+
+(define (create-matrix-f32-by-function fct lin col)
+  (display "create-matrix-f32-by-function") (newline)
+  (define m (create-f32vector-2d fct lin col))
+  (display "m created") (newline)
+  (matrix-f32 m))
+  ;(matrix-f32 (create-f32vector-2d fct lin col)))
 
 
 
@@ -222,6 +281,56 @@
 
 
 
+(define (multiply-matrix-matrix-f64 M1 M2)
+
+  ;(display "matrix+.scm : multiply-matrix-matrix-f64") (newline)
+
+  {(n1 p1) <+ (dim-matrix M1)}
+  {(n2 p2) <+ (dim-matrix M2)}
+  
+  (when {p1 ≠ n2} (error "matrix.* : matrix product impossible, incompatible dimensions"))
+  
+  {v1 <+ (matrix-v M1)}
+  {v2 <+ (matrix-v M2)}
+  
+  (define (res i j)
+    (define sum :: double 0.0)
+    (for ({k <+ 0} {k < p1} {k <- k + 1})
+	 {sum <- sum + v1[i][k] * v2[k][j]})
+	 ;(display "sum=")(display sum) (newline)
+    sum)
+
+	
+  {v <+ (create-f64vector-2d res n1 p2)}
+  
+  (matrix-f64 v))
+
+
+(define (multiply-matrix-matrix-f32 M1 M2)
+
+  ;(display "matrix+.scm : multiply-matrix-matrix-f32") (newline)
+
+  {(n1 p1) <+ (dim-matrix M1)}
+  {(n2 p2) <+ (dim-matrix M2)}
+  
+  (when {p1 ≠ n2} (error "matrix.* : matrix product impossible, incompatible dimensions"))
+  
+  {v1 <+ (matrix-v M1)}
+  {v2 <+ (matrix-v M2)}
+  
+  (define (res i j)
+    (define sum :: float 0.0)
+    (for ({k <+ 0} {k < p1} {k <- k + 1})
+	 {sum <- sum + v1[i][k] * v2[k][j]})
+	 ;(display "sum=")(display sum) (newline)
+    sum)
+
+	
+  {v <+ (create-f32vector-2d res n1 p2)}
+  
+  (matrix-f32 v))
+
+
 ;; second stage overloading
 (overload-existing-operator * multiply-matrix-matrix (matrix? matrix?))
 (overload-existing-operator * multiply-matrix-matrix-float (matrix-float? matrix-float?))
@@ -229,7 +338,9 @@
 ;; so this must me stored with specific matrix first (float, double) and general matrix after.
 ;; other wise one should use specialized predicate (see: matrix-scheme?)
 (overload-existing-operator * multiply-matrix-matrix-double (matrix-double? matrix-double?))
-;; as lisp/scheme construct the lists by adding at head (not tail) the data the overloading order must be: matrix,float,double or matrix,double,float 
+;; as lisp/scheme construct the lists by adding at head (not tail) the data the overloading order must be: matrix,float,double or matrix,double,float
+(overload-existing-operator * multiply-matrix-matrix-f64 (matrix-f64? matrix-f64?))
+(overload-existing-operator * multiply-matrix-matrix-f32 (matrix-f32? matrix-f32?))
 
 (display "$ovrld-ht$=")
 (display $ovrld-ht$)
@@ -248,25 +359,27 @@
   (matrix (vector-map (lambda (x) (make-vector 1 x))
 		      v)))
 
-;; TODO: put this in a module
-(define-syntax to-float
-  (syntax-rules ()
-    ((_ expr) (begin (define rv :: float expr)
-		     rv))))
 
 
-(define-syntax to-double
-  (syntax-rules ()
-    ((_ expr) (begin (define rv :: double expr)
-		     rv))))
 
 (define (vector->matrix-float-column v)
-  (matrix-float (vector-map (lambda (x) (make-vector 1 (to-float x)))
+  (matrix-float (vector-map (lambda (x) (make-vector 1 (->float x)))
 			    v)))
 
 (define (vector->matrix-double-column v)
-  (matrix-double (vector-map (lambda (x) (make-vector 1 (to-double x)))
+  (matrix-double (vector-map (lambda (x) (make-vector 1 (->double x)))
 			     v)))
+
+
+(define (vector->matrix-f64-column v)
+  (matrix-f64 (vector-map (lambda (x) (make-f64vector 1 (->double x)))
+			     v)))
+
+
+(define (vector->matrix-f32-column v)
+  (matrix-f32 (vector-map (lambda (x) (make-f32vector 1 (->float x)))
+			     v)))
+
 
 (define (matrix-column->vector Mc)
   {v <+ (matrix-v Mc)}
@@ -288,10 +401,21 @@
   (matrix-column->vector {M * Mc}))
 
 
+(define (multiply-matrix-f64-vector M v) ;; args: matrix ,vector ;  return vector
+  {Mc <+ (vector->matrix-f64-column v)}
+  (matrix-column->vector {M * Mc}))
+
+
+(define (multiply-matrix-f32-vector M v) ;; args: matrix ,vector ;  return vector
+  {Mc <+ (vector->matrix-f32-column v)}
+  (matrix-column->vector {M * Mc}))
+
+
 (overload-existing-operator * multiply-matrix-vector (matrix? vector?))
 (overload-existing-operator * multiply-matrix-float-vector (matrix-float? vector?))
 (overload-existing-operator * multiply-matrix-double-vector (matrix-double? vector?))
-
+(overload-existing-operator * multiply-matrix-f64-vector (matrix-f64? vector?))
+(overload-existing-operator * multiply-matrix-f32-vector (matrix-f32? vector?))
 
 ;; define getter,setter
 ;; (matrix-ref M 1 1)
@@ -299,6 +423,15 @@
 (define (matrix-ref M lin col)
   {v <+ (matrix-v M)}
   {v[lin][col]})
+
+(define (matrix-f64-ref M lin col)
+  {v <+ (matrix-v M)}
+  ({v[lin]} col))
+
+
+(define (matrix-f32-ref M lin col)
+  {v <+ (matrix-v M)}
+  ({v[lin]} col))
 
 
 ;; (matrix-set! M 0 1 -7)
@@ -310,10 +443,27 @@
   {v[lin][col] <- x})
 
 
+(define (matrix-f64-set! M lin col x)
+  {v <+ (matrix-v M)}
+  (f64vector-set! {v[lin]} col x))
+
+
+(define (matrix-f32-set! M lin col x)
+  {v <+ (matrix-v M)}
+  (f32vector-set! {v[lin]} col x))
+
 
 ;; (matrix-line-ref M 1)
 ;; #(1 2 3)
 (define (matrix-line-ref M lin)
+  {v <+ (matrix-v M)}
+  {v[lin]})
+
+(define (matrix-f64-line-ref M lin)
+  {v <+ (matrix-v M)}
+  {v[lin]})
+
+(define (matrix-f32-line-ref M lin)
   {v <+ (matrix-v M)}
   {v[lin]})
 
@@ -329,10 +479,25 @@
   {v[lin] <- vect-line})
 
 
+(define (matrix-f64-line-set! M lin vect-line)
+  {v <+ (matrix-v M)}
+  {v[lin] <- vect-line})
+
+
+(define (matrix-f32-line-set! M lin vect-line)
+  {v <+ (matrix-v M)}
+  {v[lin] <- vect-line})
+
 
 ;; overload [ ] 
 (overload-square-brackets matrix-ref matrix-set!  (matrix? number? number?))
 (overload-square-brackets matrix-line-ref matrix-line-set! (matrix? number?))
+
+(overload-square-brackets matrix-f64-ref matrix-f64-set!  (matrix-f64? number? number?))
+(overload-square-brackets matrix-f64-line-ref matrix-f64-line-set! (matrix-f64? number?))
+
+(overload-square-brackets matrix-f32-ref matrix-f32-set!  (matrix-f32? number? number?))
+(overload-square-brackets matrix-f32-line-ref matrix-f32-line-set! (matrix-f32? number?))
 
 
 ;) ; end module

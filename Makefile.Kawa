@@ -33,7 +33,7 @@ PARSER_OPTIONS_MAIN=--kawa $(PARSER_OPTIONS) # allow more compatibility with Kaw
 MODULE_DIRECTORY=$(SRC_DIR)/module_directory
 
 # result of parsing (parsed file name)
-PROGRAM_PARSED=exo_retropropagationNhidden_layers_matrix_v2_by_vectors4kawa.scm exo_retropropagationNhidden_layers_matrix_v2_by_vectors4kawa-float.scm  exo_retropropagationNhidden_layers_matrix_v2_by_vectors4kawa-double.scm
+PROGRAM_PARSED=exo_retropropagationNhidden_layers_matrix_v2_by_vectors4kawa.scm exo_retropropagationNhidden_layers_matrix_v2_by_vectors4kawa-float.scm  exo_retropropagationNhidden_layers_matrix_v2_by_vectors4kawa-double.scm exo_retropropagationNhidden_layers_matrix_v2_by_vectors4kawa-f64.scm exo_retropropagationNhidden_layers_matrix_v2_by_vectors4kawa-f32.scm
 
 # Kawa modules to build
 MODULES_NAME=matrix.scm
