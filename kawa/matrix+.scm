@@ -22,7 +22,7 @@
 ;(define-library (matrix) ; R7RS
 
 (import (Scheme+)
-        (array))
+        (array)) ; also vectors of srfi 4 are considered array !
 
 ;; (require Scheme+)
 ;; (require array)
@@ -117,6 +117,7 @@
    (apply-matrix f (this)))
 
   ) ; end class
+
 
 (define-simple-class matrix-float (matrix)
   ;; A constructor which calls the superclass constructor.
@@ -533,8 +534,18 @@
 
 ; apply a function to each elements of the matrix
 (define (apply-matrix f M)
-  (vector-map (lambda (v) (vector-map f v))
-	      M:v))
+  ;; (vector-map (lambda (v) (vector-map f v))
+  ;; 	      M:v))
+
+  {(n-lin n-col) <+ (M:dim)} ; number of lines , columns
+  
+  (for-each (lambda (vct) (for ({j <+ 0} {j < n-col} {j <- j + 1})
+			       ;; (vector-set! vct
+			       ;; 		    j
+			       ;; 		    (f (vector-ref vct j)))
+			       {vct[j] <- (f vct[j])}
+			       ))
+	    M:v))
 
 
 ;) ; end module

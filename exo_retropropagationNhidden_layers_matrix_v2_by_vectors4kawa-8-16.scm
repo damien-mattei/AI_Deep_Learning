@@ -152,11 +152,37 @@
 
 (newline)
 
-(display "Matrix r1:M=")
+(display "Matrix vector r1:M=")
 
 (newline)
 
 (for-each (lambda (mt) (mt:display-matrix) (newline)) r1:M)
+
+(newline)
+
+(r1:test Lexemples1)
+
+(define precision (->double 10.0))
+
+(display "precision=")
+
+(display precision)
+
+(newline)
+
+(define (trunc x :: double) (->double (/ (round (* precision x)) precision)))
+
+(define (trunc-matrix mt) (mt:apply trunc))
+
+(for-each trunc-matrix r1:M)
+
+(display "Matrix vector modified r1:M=")
+
+(newline)
+
+(for-each (lambda (mt) (mt:display-matrix) (newline)) r1:M)
+
+(newline)
 
 (r1:test Lexemples1)
 
@@ -173,6 +199,30 @@
   (cons (vector d0 d1) (vector d1)) (cons (vector d1 d1) (vector d0))))
 
 (r2:apprentissage Lexemples2)
+
+(r2:test Lexemples2)
+
+(newline)
+
+(newline)
+
+(display "Matrix vector r2:M=")
+
+(newline)
+
+(for-each (lambda (mt) (mt:display-matrix) (newline)) r2:M)
+
+(newline)
+
+(for-each trunc-matrix r2:M)
+
+(display "Matrix vector modified r2:M=")
+
+(newline)
+
+(for-each (lambda (mt) (mt:display-matrix) (newline)) r2:M)
+
+(newline)
 
 (r2:test Lexemples2)
 

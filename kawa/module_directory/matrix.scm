@@ -235,5 +235,10 @@
 (overload-square-brackets matrix-f32-line-ref matrix-f32-line-set!
  (matrix-f32? number?))
 
-(define (apply-matrix f M) (vector-map (lambda (v) (vector-map f v)) M:v))
+(define (apply-matrix f M) (<+ (n-lin n-col) (M:dim))
+ (for-each
+  (lambda (vct)
+   (for ((<+ j 0) (< j n-col) ($nfx$ j <- j + 1))
+    (<- (bracket-apply vct j) (f (bracket-apply vct j)))))
+  M:v))
 

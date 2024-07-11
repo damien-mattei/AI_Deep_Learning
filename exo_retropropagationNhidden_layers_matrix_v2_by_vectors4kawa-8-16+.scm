@@ -406,8 +406,39 @@
 (for-each (lambda (mt) (mt:display-matrix)
 			(newline))
 	  r1:M)
+(newline)
 
 (r1:test Lexemples1)
+
+; truncate the coefficients of the deep neural network
+
+; (define x 1234.5678)
+; {round{100.0 * x} / 100}
+; 1234.57
+
+(define precision (->double 10.0))
+
+(display "precision=") (display precision) (newline)
+
+(define (trunc x :: double) ; truncate a number x to log10(precision) decimals
+	(->double {round{precision * x} / precision}))
+
+(define (trunc-matrix mt) ; truncate coefficient of a matrix 
+	(mt:apply trunc))
+
+; truncate all the transitional matrices of the deep neural network
+(for-each trunc-matrix 
+	  r1:M) ; r1 is an instance of the retro-propagation class , M contains the transitional matrices defining the network
+
+(display "Matrix vector modified r1:M=") (newline)
+(for-each (lambda (mt) (mt:display-matrix)
+			(newline))
+	  r1:M)
+(newline)
+
+; re-run test on examples to see difference
+(r1:test Lexemples1)
+
 
 (newline)
 
@@ -446,7 +477,29 @@
 
 (newline)
 
+(newline)
+(display "Matrix vector r2:M=") (newline)
+(for-each (lambda (mt) (mt:display-matrix)
+			(newline))
+	  r2:M)
+(newline)
 
+
+; truncate all the transitional matrices of the deep neural network
+(for-each trunc-matrix 
+	  r2:M) ; r1 is an instance of the retro-propagation class , M contains the transitional matrices defining the network
+
+(display "Matrix vector modified r2:M=") (newline)
+(for-each (lambda (mt) (mt:display-matrix)
+			(newline))
+	  r2:M)
+(newline)
+
+; re-run test on examples to see difference
+(r2:test Lexemples2)
+
+
+(newline)
 
 
 (display "################## SINE ##################")
