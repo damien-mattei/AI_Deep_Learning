@@ -305,7 +305,6 @@ but will it works with Scheme+ parser?
 				{nc <- vector-length(z[i])}
 				{ns <- vector-length(z[i + 1])}
 				(for-racket ([j (in-range nc)])
-					{k <- 0}
 					{ᐁ[i][j] <- (for/sum ([k (in-range ns)])
 							{მzⳆმz̃(z[i + 1][k] z̃[i + 1][k]) * M[i][k {j + 1}] * ᐁ[i + 1][k]})})
 				; modification des poids de la matrice de transition de la couche i-1 à i
