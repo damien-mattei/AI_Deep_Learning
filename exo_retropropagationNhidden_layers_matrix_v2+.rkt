@@ -275,7 +275,7 @@ but will it works with Scheme+ parser?
 
 		      ; RETRO_PROPAGATION VERS L'ARRIERE, EN DEUX TEMPS
 
-		      {i <- i_output_layer <- {vector-length(z) - 1}} ; start at index i of the ouput layer
+		      {i <- i_output_layer <- vector-length(z) - 1} ; start at index i of the ouput layer
 
 		      {ns <- vector-length(z[i])}
 		     
