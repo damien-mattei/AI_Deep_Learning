@@ -345,33 +345,56 @@ class ReseauRetroPropagation():
 
 
 
+precision = 2
+
+
+def trunc(x):
+
+    return round(x,precision)
+
+
 
             
 if __name__ == '__main__':
     
 
     print('################## NOT ##################')
-    r1 = ReseauRetroPropagation([1,2,1],50000,10,σ,σ,der_σ,der_σ)
+    r1 = ReseauRetroPropagation([1,2,1],5000,10,σ,σ,der_σ,der_σ)
     Lexemples1 = [[[1],[0]],[[0],[1]]]
     START = time() ; r1.apprentissage(Lexemples1) ; END = time()
     r1.test(Lexemples1)
     print('APPRENTISSAGE sur {} itérations, time = {:.2f}s'.format(r1.nbiter,END-START))
     print()
     print("Error=") ; print(r1.error)
+    print("r1.M=",r1.M)
+
+    for mt in r1.M:
+        mt.apply(trunc)
+
+    print("aprés modif M=",r1.M)
+    r1.test(Lexemples1)
+
+
     
     #for i in range(100):
     print('################## XOR ##################')
     # 2 entrées (+ bias), 1 neurone en sortie
         #r2 = ReseauRetroPropagation([2,3,1],250000,10,σ,σ,der_σ,der_σ)
-    r2 = ReseauRetroPropagation([2,8,1],50000,0.1,σ,σ,der_σ,der_σ)
+    r2 = ReseauRetroPropagation([2,8,1],250000,0.1,σ,σ,der_σ,der_σ)
     #r2 = ReseauRetroPropagation([2,8,10,7,1],50000,0.1,0.001,σ,σ,der_σ,der_σ) 
     Lexemples2 = [[[1,0],[1]], [[0,0],[0]], [[0,1],[1]], [[1,1],[0]]]
     START = time() ; r2.apprentissage(Lexemples2) ; END = time()
     print('APPRENTISSAGE sur {} itérations, time = {:.2f}s'.format(r2.nbiter,END-START))
     r2.test(Lexemples2)
     print("Error=") ; print(r2.error)
-    #print("r2.M=",r2.M)
+    print("r2.M=",r2.M)
 
+    for mt in r2.M:
+        mt.apply(trunc)
+
+    print("aprés modif M=",r2.M)
+    r2.test(Lexemples2)
+ 
     print('################## SINUS ##################')
     #r3 = ReseauRetroPropagation([1,30,30,30,1],50000,0.1,tanh,tanh,der_tanh,der_tanh)
     #r3 = ReseauRetroPropagation([1,30,30,30,1],50000,0.01,atan,tanh,der_atan,der_tanh)
@@ -383,6 +406,14 @@ if __name__ == '__main__':
     print('APPRENTISSAGE sur {} itérations, time = {:.2f}s'.format(r3.nbiter,END-START))
     r3.test(Ltest)
     print("Error=") ; print(r3.error)
+    print("r3.M=",r3.M)
+
+    for mt in r3.M:
+        mt.apply(trunc)
+
+    print("aprés modif M=",r3.M)
+    r3.test(Ltest)
+
     
     # COMPLEMENTS EN LIGNE
     #from webbrowser import open as browse

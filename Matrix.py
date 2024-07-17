@@ -107,7 +107,7 @@ class Matrix:
         '''Retourne une chaine formatée avec colonnes alignées représentant
         la matrice m.'''
 
-        return self.__str__() + '\nMatrix @ {} \n'.format(hex(id(self)))
+        return '\nMatrix @ {} \n'.format(hex(id(self))) + self.__str__()
         
 
 
@@ -118,7 +118,7 @@ class Matrix:
         la matrice m.'''
 
         def texte(x):
-            return '{:10.2f}'.format(x)   # précision limitée à l'affichage...
+            return '{:10.5f}'.format(x)   # précision limitée à l'affichage...
             
         (n,p) = self.dim()
         L = ['\t'.join(list(map(texte,self.L[i]))) for i in range(n)]
@@ -162,7 +162,16 @@ class Matrix:
         '''Retourne le produit externe du nombre k par la matrice m.'''
         (n,p) = self.dim()
         return Matrix(lambda i,j : k*self.L[i][j],n,p)
-    
+
+    def apply(self,f):
+        '''Apply fonction à la matrice m.'''
+        M = self
+        L = self.L
+        (n,p) = M.dim()
+        for i in range(n):
+            for j in range(p):
+                L[i][j] = f(L[i][j])
+        M.L = L
 
     # R  : multiplicand
     # matrix multiplication by number

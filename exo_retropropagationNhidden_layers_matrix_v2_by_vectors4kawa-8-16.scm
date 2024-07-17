@@ -4,7 +4,7 @@
 
 (require matrix)
 
-(import (only (kawa base) (+ orig+)))
+(import (only (kawa base) (+ orig+) (display orig-display)))
 
 (define-overload-existing-operator + orig+)
 
@@ -82,6 +82,12 @@
   (display "M=") (display M) (newline) (<- ᐁ (vector-map make-vector-z nc))
   (display "ᐁ=") (display ᐁ) (newline) (display "nbiter=") (display nbiter)
   (newline))
+ ((display-retro-propag) (display "vector of matrices  M=") (newline)
+  (for-each (lambda (mt) (mt:display-matrix) (newline)) M) (newline))
+ ((display . L)
+  (cond ((null? L) (display-retro-propag))
+   ((= (length L) 2) (orig-display (car L) (cadr L)))
+   (else (orig-display (car L)))))
  ((accepte_et_propage x)
   (when (≠ (vector-length x) (vector-length (bracket-apply z 0)))
    (display "Mauvais nombre d'entrées !") (newline) (exit #f))
@@ -152,11 +158,7 @@
 
 (newline)
 
-(display "Matrix vector r1:M=")
-
-(newline)
-
-(for-each (lambda (mt) (mt:display-matrix) (newline)) r1:M)
+(r1:display)
 
 (newline)
 
@@ -180,7 +182,7 @@
 
 (newline)
 
-(for-each (lambda (mt) (mt:display-matrix) (newline)) r1:M)
+(r1:display-retro-propag)
 
 (newline)
 
@@ -206,11 +208,7 @@
 
 (newline)
 
-(display "Matrix vector r2:M=")
-
-(newline)
-
-(for-each (lambda (mt) (mt:display-matrix) (newline)) r2:M)
+(r2:display-retro-propag)
 
 (newline)
 
@@ -220,7 +218,7 @@
 
 (newline)
 
-(for-each (lambda (mt) (mt:display-matrix) (newline)) r2:M)
+(r2:display-retro-propag)
 
 (newline)
 

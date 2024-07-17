@@ -3,6 +3,12 @@
 
 #  D. Mattei
 
+# python3.11 -O exo_retropropagationNhidden_layers_matrixnumpy.py
+
+# MacOS users : use MacVim to show ALL the characters of this file (not Emacs, not Aquamacs)
+# jeu de couleurs: Torte ou Koehler
+
+
 from random import seed, uniform
 seed(1789)     # si vous voulez avoir les mêmes tirages aléatoires à chaque exécution du fichier !
 from math import exp, pow
@@ -209,7 +215,7 @@ if __name__ == '__main__':
     
 
     print('################## NOT ##################')
-    r1 = ReseauRetroPropagation([1,2,1],nbiter=10000,eta=0.5)
+    r1 = ReseauRetroPropagation([1,2,1],nbiter=5000,eta=10)
     Lexemples1 = [[[1],[0]],[[0],[1]]]
     START = time() ; r1.apprentissage(Lexemples1) ; END = time()
     r1.test(Lexemples1)
@@ -217,13 +223,16 @@ if __name__ == '__main__':
     print()
     
     print('################## XOR ##################')
-    r2 = ReseauRetroPropagation([2,8,10,7,1],nbiter=50000,eta=0.1)    # 2 entrées (+ bias), 3 couches de neurones cachés (+ bias), 1 neurone en sortie
+    r2 = ReseauRetroPropagation([2,8,1],nbiter=250000,eta=0.1)    # 2 entrées (+ bias), 3 couches de neurones cachés (+ bias), 1 neurone en sortie
     Lexemples2 = [[[1,0],[1]], [[0,0],[0]], [[0,1],[1]], [[1,1],[0]]]
     START = time() ; r2.apprentissage(Lexemples2) ; END = time()
     print('APPRENTISSAGE sur {} itérations, time = {:.2f}s'.format(r2.nbiter,END-START))
     r2.test(Lexemples2)
     print("Error=") ; print(r2.error)
     #print("r2.mat_ij=",r2.mat_ij)
+
+
+    
 
     # COMPLEMENTS EN LIGNE
     from webbrowser import open as browse

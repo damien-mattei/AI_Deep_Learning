@@ -26,7 +26,8 @@
 
 
 ;; first stage overloading
-(import (only (kawa base) (+ orig+))) ; (* orig*)))
+(import (only (kawa base) (+ orig+) (display orig-display))) ; (* orig*)))
+
 
 ;(define orig+ +)
 ;(define orig* *)
@@ -72,7 +73,7 @@
 
 (overload-procedure random 
 		    (lambda () (->double (java.lang.Math:random))) 
-		    ())
+		    ()) ; NIL because the lambda has no arguments
 
 
 
@@ -131,6 +132,7 @@
 		; and update the bias
             	{M_i_o[j 0]  <-  M_i_o[j 0] - (- η) * 1.0 * მzⳆმz̃(z_output[j] z̃_output[j]) * ᐁ_i_o[j]}))
 	
+
 
 
 
@@ -196,13 +198,30 @@
 
   ) ;; end *init*
 
+
+
+  ((display-retro-propag)
+	
+    	(display "vector of matrices  M=") (newline)
+        (for-each (lambda (mt) (mt:display-matrix)
+			(newline))
+                   M)
+        (newline))
+
+
+  ((display . L)  ; accept any number of arguments
+
+	(cond ((null? L) (display-retro-propag)) ; no arguments
+	      ({length(L) = 2} (orig-display (car L) (cadr L))) ; 2 arguments
+ 	      (else (orig-display (car L)))))  ; i suppose 1 argument
+
+
   ; forward propagation
     
   ; z_* sans le coef. 1 constant pour le bias
 
 
-
-((accepte_et_propage x) ; on entre des entrées et on les propage
+ ((accepte_et_propage x) ; on entre des entrées et on les propage
   
   (when {vector-length(x) ≠ vector-length(z[0])} 
 	(display "Mauvais nombre d'entrées !") (newline)
@@ -270,7 +289,7 @@
 
 
 
-((apprentissage Lexemples) ; apprentissage des poids par une liste d'exemples
+ ((apprentissage Lexemples) ; apprentissage des poids par une liste d'exemples
   
   {ip <+ 0} ; numéro de l'exemple courant
 
@@ -370,6 +389,8 @@
 
 
 
+
+
 ;; ################## NOT ##################
 ;; *init* : nc=#(1 2 1)
 ;; z=#(#(0) #(0 0) #(0))
@@ -402,10 +423,7 @@
 (r1:apprentissage Lexemples1)
 
 (newline)
-(display "Matrix vector r1:M=") (newline)
-(for-each (lambda (mt) (mt:display-matrix)
-			(newline))
-	  r1:M)
+(r1:display)
 (newline)
 
 (r1:test Lexemples1)
@@ -431,9 +449,7 @@
 	  r1:M) ; r1 is an instance of the retro-propagation class , M contains the transitional matrices defining the network
 
 (display "Matrix vector modified r1:M=") (newline)
-(for-each (lambda (mt) (mt:display-matrix)
-			(newline))
-	  r1:M)
+(r1:display-retro-propag)
 (newline)
 
 ; re-run test on examples to see difference
@@ -478,10 +494,7 @@
 (newline)
 
 (newline)
-(display "Matrix vector r2:M=") (newline)
-(for-each (lambda (mt) (mt:display-matrix)
-			(newline))
-	  r2:M)
+(r2:display-retro-propag)
 (newline)
 
 
@@ -490,9 +503,7 @@
 	  r2:M) ; r1 is an instance of the retro-propagation class , M contains the transitional matrices defining the network
 
 (display "Matrix vector modified r2:M=") (newline)
-(for-each (lambda (mt) (mt:display-matrix)
-			(newline))
-	  r2:M)
+(r2:display-retro-propag)
 (newline)
 
 ; re-run test on examples to see difference
@@ -520,8 +531,6 @@
 {Ltest <+ (vector-map (lambda (x) (cons (vector x) (vector (sin x))))  ; use pairs in Scheme instead of vectors in Python
 		      (list->vector (map (lambda (n) (uniform-interval {(- pi) / 2} {pi / 2}))
 					 (in-range 10000))))}
-
-
 
 
 (r3:apprentissage Llearning)
