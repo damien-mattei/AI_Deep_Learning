@@ -353,6 +353,11 @@ def trunc(x):
     return round(x,precision)
 
 
+def trunc3(x):
+
+    return round(x,3)
+
+
 
             
 if __name__ == '__main__':
@@ -369,7 +374,7 @@ if __name__ == '__main__':
     print("r1.M=",r1.M)
 
     for mt in r1.M:
-        mt.apply(trunc)
+        mt.apply(trunc) # apply truncature on all coefficients of the matrices of the deep neural network
 
     print("aprés modif M=",r1.M)
     r1.test(Lexemples1)
@@ -409,7 +414,7 @@ if __name__ == '__main__':
     print("r3.M=",r3.M)
 
     for mt in r3.M:
-        mt.apply(trunc)
+        mt.apply(trunc3)
 
     print("aprés modif M=",r3.M)
     r3.test(Ltest)

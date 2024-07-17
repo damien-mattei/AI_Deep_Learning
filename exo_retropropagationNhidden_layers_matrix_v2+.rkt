@@ -482,9 +482,23 @@ but will it works with Scheme+ parser?
 (display M)
 (newline)
 
+
+{precision <- 1000.0}
+
+(display "precision=") (display precision) (newline)
+
+(define (trunc3 x) ; truncate a number x to log10(precision) decimals
+	{round{precision * x} / precision})
+
+(define-pointwise-unary trunc3) ; flomat library feature that create an unary function .trunc!
+
+(define (trunc3-matrix mt) ; truncate coefficient of a matrix 
+	(.trunc3! mt))
+
+
 ; truncate all the transitional matrices of the deep neural network
 (for-racket ([mt M])
-	(trunc-matrix mt)) 
+	(trunc3-matrix mt)) 
 
 (display "Matrix vector modified M=") (newline)
 (display M)
