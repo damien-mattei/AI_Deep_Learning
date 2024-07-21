@@ -10,7 +10,7 @@
 
 
 ; MacOS users : use MacVim to show ALL the characters of this file (not Emacs, not Aquamacs)
-;; jeu de couleurs: Torte ou Koehler / Peachpuff ou Retrobox le soir
+;; jeu de couleurs: Torte ou Koehler / Peachpuff ou Retrobox la nuit
 
 ;; use in GUI 
 ;; use in command line:
@@ -24,13 +24,7 @@
 
 (provide (all-defined-out)) 
 
-;; this file must now be included in your main project file like this:
-;; at the beginning of your main file add
-;; for infix operator precedence:
-;(define-namespace-anchor ankh)
-;(define bsns (namespace-anchor->namespace ankh))
-;(current-namespace bsns)
-
+(require plot)
 
 ;(require srfi/42) ; Eager Comprehensions
 
@@ -89,31 +83,6 @@
 #| this is a Scheme multi line comment,
 but will it works with Scheme+ parser?
 |#
-
-;> (for ([x (in-range 0 3)]) (display x) (newline) )
-;0
-;1
-;2
-;> (for ([x (reversed (in-range 0 3))]) (display x) (newline) )
-;2
-;1
-;0
-(define-syntax reversed ; same as Python : reversed(range(0,3))
-  
-  		(syntax-rules ()
-
-    			((_ (name end)) (begin
-					  (unless (equal? (quote in-range) (quote name)) 
-	       					(error "first argument is not in-range:" (quote name)))
-					  (in-range {end - 1} -1 -1)))
-
-			((_ (name start end)) (begin
-					  	(unless (equal? (quote in-range) (quote name)) 
-	       						(error "first argument is not in-range:" (quote name)))
-					  	(in-range {end - 1} {start - 1} -1)))))
-
-
-
 
 
 ; (make-object ReseauRetroPropagation)
@@ -355,6 +324,29 @@ but will it works with Scheme+ parser?
 	  (display "Error on examples=") (display error) (newline))
 
 
+	
+	; compute the points for plotting
+	(define/public (DL-data-2D)
+
+		(list-ec (s42: n 100)
+	      		($+>
+			    {xp <- (- pi) / 2 + pi * n / 100}
+			    (accepte_et_propage (vector xp))
+			    {xp-DL <- z[vector-length(z) - 1][0]}
+			    (vector xp xp-DL))))
+
+
+	; plot in 2D the points of the input/output layers
+	(define/public (DL-plot)
+		
+		{Lplot-DL <- (DL-data-2D)}
+
+		(plot (points Lplot-DL  #:sym 'fullcircle1
+            	         		#:color "red")))
+
+
+	
+
 
    ) ; end class
 
@@ -455,9 +447,9 @@ but will it works with Scheme+ parser?
 {r3 <- (new ReseauRetroPropagation (nc #(1 70 70 1))
 				   (nbiter 50000)
 				   (ηₛ 0.01)
-				   (activation_function_hidden_layer atan)
+				   (activation_function_hidden_layer atan) ;tanh) ; atan)
 				   (activation_function_output_layer tanh)
-				   (activation_function_hidden_layer_derivative der_atan)
+				   (activation_function_hidden_layer_derivative der_atan) ;der_tanh); der_atan)
 				   (activation_function_output_layer_derivative der_tanh))}
 
 {Llearning <- (vector-ec (:list x (list-ec (s42: n 10000)
@@ -470,10 +462,45 @@ but will it works with Scheme+ parser?
 		     (cons (vector x) (vector (sin x))))   ; vectors by eager comprehension (SRFI 42)
        }  ; use pairs in Scheme instead of vectors in Python
 
+;{Lplot <- (list-ec (:list x (list-ec (s42: n 100)
+;				{{(- pi) / 2} + {n / 100} * pi}))
+;		   (vector x (sin x)))}
+
+;(display "Lplot=") (newline)
+;(display Lplot)
+;(newline)
+
+
+{Lplot-sin <- (list-ec (s42: n 100)
+	      	     ($+>
+			{xp <- (- pi) / 2 + pi * n / 100}
+			(vector xp (sin xp))))}
+
+(display "Lplot-sin =") (newline)
+(display Lplot-sin )
+(newline)
+
+(plot (points Lplot-sin  #:sym 'fullcircle1
+            	         #:color "blue"
+			 #:label "y = sin(x)"))
+
+ 
 
 (send r3 apprentissage Llearning)
 
 (send r3 test Ltest)
+
+(send r3 DL-plot)
+
+{Lplot-DL-main <- (send r3 DL-data-2D)} ; bug possibly cause by Lplot-DL being defined in 2 places (see define/public method)
+
+(plot (list (points Lplot-sin  #:sym 'fullcircle1
+                	       #:color "blue"
+			       #:label "y = sin(x)")
+	    (points Lplot-DL-main   #:sym 'circle1
+            	               	    #:color "red"
+				    #:label "neural sine")))
+
 
 {M <- (get-field M r3)} ; get the vector of matrices in the retro-propagation class
 
@@ -506,6 +533,15 @@ but will it works with Scheme+ parser?
 
 (send r3 test Ltest)
 (newline)
+
+{Lplot-DL-trunc <- (send r3 DL-data-2D)} 
+
+(plot (list (points Lplot-DL-trunc  #:sym 'circle1
+                	            #:color "green"
+				    #:label "neural sine - matrices with truncated numbers")
+	    (points Lplot-DL-main   #:sym 'circle1
+            	               	    #:color "red"
+				    #:label "neural sine")))
 
 
 ) ; end module
