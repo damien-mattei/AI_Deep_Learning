@@ -42,7 +42,7 @@ class PerceptronApprentissage(Perceptron):
     '''Construit un perceptron capable de calculer les poids permettant de
     satisfaire un "training set".'''
     
-    def __init__(self,Lexemples,timeout=120,unite=30,graphic_mode=False,demo_mode=False,display_line=False,normalize=False):
+    def __init__(self,window_title,Lexemples,timeout=120,unite=30,graphic_mode=False,demo_mode=False,display_line=False,normalize=False):
         
         '''La liste 'Lexemples' représente le training set : ce que l'on souhaire obtenir en réponse.
         Les poids sont initialisés aleatoirement. Abandonne le calcul au bout de 'timeout' secondes.'''
@@ -77,7 +77,7 @@ class PerceptronApprentissage(Perceptron):
         if graphic_mode and self.n_dim == 2: # we only can plot 2 dimensions perceptron inputs
 
             self.graphic_mode = True
-            self.graph=toolboxGraphic(unite,demo_mode=demo_mode)
+            self.graph=toolboxGraphic(window_title,unite,demo_mode=demo_mode)
 
             if display_line:
                 # plot ideal separation line
@@ -406,35 +406,35 @@ if __name__ == '__main__':
     display_line = False
     
     # un perceptron qui apprend le OU
-    L1=[([1,1],1),([0,0],0),([1,0],1),([0,1],1)]
-    p1 = PerceptronApprentissage(Lexemples=L1,unite=90,timeout=1200,graphic_mode=True,display_line=display_line,normalize=False)   # ce que l'on veut
-    print('Vérifions si le perceptron p1 a appris la formule (x1 ou x2) :')
-    for x in (0,1) :
-        for y in (0,1) :
-            print('{} ou {} --> {}'.format(x,y,p1.reponse([x,y])))
+    # L1=[([1,1],1),([0,0],0),([1,0],1),([0,1],1)]
+    # p1 = PerceptronApprentissage("OR",Lexemples=L1,unite=90,timeout=1200,graphic_mode=True,display_line=display_line,normalize=False)   # ce que l'on veut
+    # print('Vérifions si le perceptron p1 a appris la formule (x1 ou x2) :')
+    # for x in (0,1) :
+    #     for y in (0,1) :
+    #         print('{} ou {} --> {}'.format(x,y,p1.reponse([x,y])))
    
-    if not p1.verify(L1):
-        print("ERREUR le Perceptron n'a pas bien appris !")
-    else:
-        print("Perceptron bien vérifié sur tout l'ensemble d'apprentissage.")
+    # if not p1.verify(L1):
+    #     print("ERREUR le Perceptron n'a pas bien appris !")
+    # else:
+    #     print("Perceptron bien vérifié sur tout l'ensemble d'apprentissage.")
         
-    print()
+    # print()
 
-    sleep(5)
+    # sleep(5)
     
     # un perceptron qui apprend le ET
-    L2=[([1,1],1),([0,0],0),([1,0],0),([0,1],0)]
-    p2 = PerceptronApprentissage(Lexemples=L2,unite=70,timeout=1200,graphic_mode=True,display_line=display_line,normalize=True)   # ce que l'on veut
-    print('Vérifions si le perceptron p1 a appris la formule (x1 et x2) :')
-    for x in (0,1) :
-        for y in (0,1) :
-            print('{} et {} --> {}'.format(x,y,p2.reponse([x,y])))
+    # L2=[([1,1],1),([0,0],0),([1,0],0),([0,1],0)]
+    # p2 = PerceptronApprentissage("AND",Lexemples=L2,unite=70,timeout=1200,graphic_mode=True,display_line=display_line,normalize=True)   # ce que l'on veut
+    # print('Vérifions si le perceptron p1 a appris la formule (x1 et x2) :')
+    # for x in (0,1) :
+    #     for y in (0,1) :
+    #         print('{} et {} --> {}'.format(x,y,p2.reponse([x,y])))
 
-    if not p2.verify(L2):
-        print("ERREUR le Perceptron n'a pas bien appris !")
-    else:
-        print("Perceptron bien vérifié sur tout l'ensemble d'apprentissage.")
-    print()
+    # if not p2.verify(L2):
+    #     print("ERREUR le Perceptron n'a pas bien appris !")
+    # else:
+    #     print("Perceptron bien vérifié sur tout l'ensemble d'apprentissage.")
+    # print()
 
     # # un perceptron qui apprend le NON
     # L3=[([1],0),([0],1)]
@@ -524,7 +524,7 @@ if __name__ == '__main__':
 
     #p7 = PerceptronApprentissage(Lexemples=L7,unite=50,timeout=360000,demo_mode=demo_mode,graphic_mode=True,display_line=True,normalize=True)   # ce que l'on veut
 
-    p7 = PerceptronApprentissage(Lexemples=L7,unite=50,timeout=360000,demo_mode=demo_mode,graphic_mode=True,display_line=True,normalize=False)   # ce que l'on veut
+    p7 = PerceptronApprentissage("Linear separator",Lexemples=L7,unite=50,timeout=360000,demo_mode=demo_mode,graphic_mode=True,display_line=True,normalize=False)   # ce que l'on veut
 
     if not p7.verify(L7):
         print("ERREUR le Perceptron n'a pas bien appris !")

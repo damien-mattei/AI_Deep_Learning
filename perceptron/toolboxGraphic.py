@@ -45,11 +45,11 @@ class toolboxGraphic():
     '''plot the perceptron.'''
 
     
-    def __init__(self,unite=70,demo_mode=False):
+    def __init__(self,window_title,unite=70,demo_mode=False):
 
         self.demo_mode = demo_mode
         self.root = tkinter.Tk()
-        self.root.title("Apprentissage Perceptron")
+        self.root.title("Learning Perceptron : "+window_title)
         print('unite={}'.format(unite))
 
         self.unite=unite
