@@ -472,7 +472,7 @@ but will it works with Scheme+ parser?
 
 
 {Lplot-sin <- (list-ec (s42: n 100)
-	      	     ($+>
+	      	     ($+> ; begin-def
 			{xp <- (- pi) / 2 + pi * n / 100}
 			(vector xp (sin xp))))}
 

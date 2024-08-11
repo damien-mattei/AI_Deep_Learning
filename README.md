@@ -7,3 +7,7 @@ https://github.com/damien-mattei/AI_Deep_Learning/blob/main/exo_retropropagation
 
 
 
+![neural sine](neural-sine.jpg?raw=true "neural sine")
+Neural Sine
+
+
