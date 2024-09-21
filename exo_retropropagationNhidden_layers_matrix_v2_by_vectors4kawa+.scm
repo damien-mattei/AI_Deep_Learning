@@ -16,10 +16,10 @@
 ; or:
 
 
-; kawa curly-infix2prefix4kawa.scm  --kawa --srfi-105 ../AI_Deep_Learning/exo_retropropagationNhidden_layers_matrix_v2_by_vectors4kawa+.scm | tr -d '|' > ../AI_Deep_Learning/exo_retropropagationNhidden_layers_matrix_v2_by_vectors4kawa.scm
+; kawa curly-infix2prefix4kawa.scm  --kawa ../AI_Deep_Learning/exo_retropropagationNhidden_layers_matrix_v2_by_vectors4kawa+.scm | tr -d '|' > ../AI_Deep_Learning/exo_retropropagationNhidden_layers_matrix_v2_by_vectors4kawa.scm
 
-
-;kawa -Dkawa.import.path=".:/Users/mattei/Scheme-PLUS-for-Kawa:./kawa/module_directory"
+;; kawa -Dkawa.import.path=".:/home/mattei/Dropbox/git/Scheme-PLUS-for-Kawa:./kawa/module_directory"
+;kawa -Dkawa.import.path=".:/Users/mattei/Dropbox/git/Scheme-PLUS-for-Kawa:./kawa/module_directory"
 
 ; (load "exo_retropropagationNhidden_layers_matrix_v2_by_vectors4kawa.scm")
 
@@ -433,7 +433,7 @@
 
 {Ltest <+ (vector-map (lambda (x) (cons (vector x) (vector (sin x))))  ; use pairs in Scheme instead of vectors in Python
 		      (list->vector (map (lambda (n) (uniform-interval {(- pi) / 2} {pi / 2}))
-					 (in-range 10000))))}
+					 (in-range 10))))}
 
 
 

@@ -464,7 +464,7 @@ but will it works with all Scheme+ parser?
 
 {Ltest <+ (vector-map (lambda (i x) (cons (vector x) (vector (sin x))))  ; use pairs in Scheme instead of vectors in Python
 		      (list->vector (map (lambda (n) (uniform-interval {(- pi) / 2} {pi / 2}))
-					 (in-range 10000))))}
+					 (in-range 10))))}
 
 
 (apprentissage Llearning r3)

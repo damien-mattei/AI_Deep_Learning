@@ -1,4 +1,8 @@
-#lang reader "../Scheme-PLUS-for-Racket/main/Scheme-PLUS-for-Racket/src/SRFI-105.rkt" ; SRFI-105 Curly-infix-expressions
+;;#lang reader "../Scheme-PLUS-for-Racket/src/SRFI-105.rkt"
+
+#lang reader SRFI-105
+
+;;#lang reader "../Scheme-PLUS-for-Racket/main/Scheme-PLUS-for-Racket/src/SRFI-105.rkt" ; SRFI-105 Curly-infix-expressions
 
 
 ; Deep Learning : back propagation, gradient descent, neural network with N hidden layers
@@ -38,7 +42,11 @@
 
 (require "matrix+.rkt")
 
-(require "../Scheme-PLUS-for-Racket/main/Scheme-PLUS-for-Racket/src/Scheme+.rkt")
+(require Scheme+)
+;;(require Scheme-PLUS-for-Racket)
+;;(require "../Scheme-PLUS-for-Racket/main/Scheme-PLUS-for-Racket/src/Scheme+.rkt")
+
+(require (only-in racket/base [for for-racket]))
 
 ; first stage overloading
 (define-overload-existing-operator +)

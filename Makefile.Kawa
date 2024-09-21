@@ -23,9 +23,12 @@ SRC_DIR=kawa
 # Scheme+ for Kawa parser
 PARSER:=$(SCHEME_PLUS_FOR_KAWA)/curly-infix2prefix4kawa.scm
 
-PARSER_COMMAND=$(SCHEME) $(PARSER)
+#PARSER_COMMAND=$(SCHEME) $(PARSER)
+# parser should be self- executable
+PARSER_COMMAND=$(PARSER)
 
-PARSER_OPTIONS=--srfi-105
+# deprecated option
+#PARSER_OPTIONS=--srfi-105
 
 PARSER_OPTIONS_MAIN=--kawa $(PARSER_OPTIONS) # allow more compatibility with Kawa syntax (different from Scheme)
 
