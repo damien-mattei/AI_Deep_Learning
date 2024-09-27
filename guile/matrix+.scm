@@ -13,9 +13,9 @@
 
   #:use-module (Scheme+)
 
-  #:use-module (for_next_step)
+  ;;#:use-module (Scheme+ for_next_step)
 
-  #:use-module (array)
+  #:use-module (Scheme+ array)
 
   #:use-module (oop goops)
 
