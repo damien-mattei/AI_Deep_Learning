@@ -18,7 +18,10 @@
 
 ; kawa curly-infix2prefix4kawa.scm  --kawa ../AI_Deep_Learning/exo_retropropagationNhidden_layers_matrix_v2_by_vectors4kawa+.scm | tr -d '|' > ../AI_Deep_Learning/exo_retropropagationNhidden_layers_matrix_v2_by_vectors4kawa.scm
 
-;; kawa -Dkawa.import.path=".:/home/mattei/Dropbox/git/Scheme-PLUS-for-Kawa:./kawa/module_directory"
+;; linux:
+;; kawa -Dkawa.import.path=".:/home/mattei/Dropbox/git/Scheme-PLUS-for-Kawa:/home/mattei/Dropbox/git/Scheme-PLUS-for-Kawa/Scheme+:./kawa/module_directory"
+
+;; MacOS:
 ;kawa -Dkawa.import.path=".:/Users/mattei/Dropbox/git/Scheme-PLUS-for-Kawa:./kawa/module_directory"
 
 ; (load "exo_retropropagationNhidden_layers_matrix_v2_by_vectors4kawa.scm")
@@ -26,7 +29,7 @@
 
 
 (require Scheme+)
-(require array)
+(import (Scheme+ array))
 (require matrix)
 
 

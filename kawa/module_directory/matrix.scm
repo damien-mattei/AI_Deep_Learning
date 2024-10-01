@@ -1,4 +1,4 @@
-(import (Scheme+) (array))
+(import (Scheme+) (Scheme+ array))
 
 (export multiply-matrix-matrix multiply-matrix-matrix-float
  multiply-matrix-matrix-double multiply-matrix-vector matrix matrix-float

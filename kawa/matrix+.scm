@@ -22,7 +22,7 @@
 ;(define-library (matrix) ; R7RS
 
 (import (Scheme+)
-        (array)) ; also vectors of srfi 4 are considered array !
+        (Scheme+ array)) ; also vectors of srfi 4 are considered array !
 
 ;; (require Scheme+)
 ;; (require array)
