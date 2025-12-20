@@ -244,3 +244,48 @@ class MatrixNumPy:
     #        [-25.5]])
 
         
+
+
+
+#Python 3.12.10 (v3.12.10:0cc81280367, Apr  8 2025, 08:46:59) [Clang 13.0.0 (clang-1300.0.29.30)] on darwin
+#Type "help", "copyright", "credits" or "license" for more information.
+#>>> import MatrixNumPy
+#>>> m1=MatrixNumPy.MatrixNumPy(lambda i,j : i+j, 5,2)
+# MatrixNumPy constructor MatrixNumPy (function,Numeric,Numeric) #
+#>>> m1
+#[[0 1]
+# [1 2]
+# [2 3]
+# [3 4]
+# [4 5]]
+#MatrixNumPy @ 0x10481e630 
+
+#>>> print(m1)
+#[[0 1]
+# [1 2]
+# [2 3]
+# [3 4]
+# [4 5]]
+#>>> m2=MatrixNumPy.MatrixNumPy([[-2],[-3.5]])
+# MatrixNumPy constructor MatrixNumPy,list #
+#>>> m2
+#[[-2. ]
+# [-3.5]]
+#MatrixNumPy @ 0x10546f830 
+
+#>>> m1*m2
+#MatrixNumPy.py : __mul__(MatrixNumPy,MatrixNumPy)
+# MatrixNumPy constructor MatrixNumPy,numpy.ndarray #
+#[[ -3.5]
+# [ -9. ]
+# [-14.5]
+# [-20. ]
+# [-25.5]]
+#MatrixNumPy @ 0x1053df290 
+
+#>>> m1.A @ m2.A
+#array([[ -3.5],
+#       [ -9. ],
+#       [-14.5],
+#       [-20. ],
+#       [-25.5]])

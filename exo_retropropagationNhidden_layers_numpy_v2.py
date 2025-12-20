@@ -114,7 +114,7 @@ class ReseauRetroPropagation():
         f = lambda j,i: uniform(-1,1)
 
 
-        def createArray(f,n,p):
+        def createNumpyArray(f,n,p):
 
             if __debug__:
                 print("# createArray (function,Numeric,Numeric) #")
@@ -122,7 +122,7 @@ class ReseauRetroPropagation():
             return numpy.array([[f(i,j) for j in range(p)] for i in range(n)])
 
 
-        self.M = [ createArray(f , nc[n+1] , nc[n] + 1)   for n in range(lnc - 1) ]
+        self.M = [ createNumpyArray(f , nc[n+1] , nc[n] + 1)   for n in range(lnc - 1) ]
 
         for n in range(lnc - 1):
             print("self.M[",n,"]=");print(self.M[n])

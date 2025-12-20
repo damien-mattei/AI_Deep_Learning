@@ -110,8 +110,8 @@ class ReseauRetroPropagation():
         # use with M[0][1][2]  notation
         #M[i][j][k] == poids k->j from layer i to layer i+1
         self.M = [ Matrix( lambda j,i: uniform(-1,1) , nc[n+1] , nc[n] + 1 )   for n in range(lnc - 1) ]
-        # for n in range(lnc - 1):
-        #     print("self.M[",n,"]=");print(self.M[n])
+        for n in range(lnc - 1):
+            print("self.M[",n,"]=");print(self.M[n])
 
         # >>> ᐁ = [ [0] * n for n in nc ]
         # >>> ᐁ
